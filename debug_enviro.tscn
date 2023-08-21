@@ -44,9 +44,6 @@ size = Vector3(15, 0.1, 15)
 [node name="Character" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.38691, 0)
 script = ExtResource("2_b48pt")
-tilt_DEBUG = null
-tilt_strength = null
-tilt_damp = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Character"]
 shape = SubResource("CapsuleShape3D_l4q1r")
@@ -57,10 +54,3 @@ mesh = SubResource("CapsuleMesh_rtbp4")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.19568, 6.45774)
 script = ExtResource("3_frrb8")
-arm_height_curve = null
-arm_length_curve = null
-pitch_limit = null
-arm_vector = null
-arm_origin = null
-look_offset = null
-correct_speed = null
