@@ -1,0 +1,66 @@
+[gd_scene load_steps=10 format=3 uid="uid://5bx28ey7jlr8"]
+
+[ext_resource type="Texture2D" uid="uid://dsphf37edk4j6" path="res://resources/textures/dev_textures/Dark/texture_07.png" id="1_lpxu4"]
+[ext_resource type="Script" path="res://resources/scripts/character_main.gd" id="2_b48pt"]
+[ext_resource type="Script" path="res://resources/scripts/camera_main.gd" id="3_frrb8"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5yt7h"]
+sky_horizon_color = Color(0.729583, 0.780167, 0.833578, 1)
+ground_bottom_color = Color(0.533333, 0.666667, 0.784314, 1)
+ground_horizon_color = Color(0.729583, 0.780167, 0.833578, 1)
+
+[sub_resource type="Sky" id="Sky_aufgb"]
+sky_material = SubResource("ProceduralSkyMaterial_5yt7h")
+
+[sub_resource type="Environment" id="Environment_tkfdw"]
+background_mode = 2
+sky = SubResource("Sky_aufgb")
+tonemap_mode = 2
+sdfgi_enabled = true
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dj4kx"]
+albedo_texture = ExtResource("1_lpxu4")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l4q1r"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_rtbp4"]
+
+[node name="World_Root" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tkfdw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+material_override = SubResource("StandardMaterial3D_dj4kx")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+size = Vector3(15, 0.1, 15)
+
+[node name="Character" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.38691, 0)
+script = ExtResource("2_b48pt")
+tilt_DEBUG = null
+tilt_strength = null
+tilt_damp = null
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Character"]
+shape = SubResource("CapsuleShape3D_l4q1r")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Character"]
+mesh = SubResource("CapsuleMesh_rtbp4")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.19568, 6.45774)
+script = ExtResource("3_frrb8")
+arm_height_curve = null
+arm_length_curve = null
+pitch_limit = null
+arm_vector = null
+arm_origin = null
+look_offset = null
+correct_speed = null
