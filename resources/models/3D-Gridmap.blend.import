@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dvme52d2vscd6"
-path="res://.godot/imported/guy_import.blend-07629bd249d4f25f8983f250493982ed.scn"
+uid="uid://ba0ykhv2b5tua"
+path="res://.godot/imported/3D-Gridmap.blend-dcdf5ae90c5514545e61145aaad42f52.scn"
 
 [deps]
 
-source_file="res://models/guy_import.blend"
-dest_files=["res://.godot/imported/guy_import.blend-07629bd249d4f25f8983f250493982ed.scn"]
+source_file="res://resources/models/3D-Gridmap.blend"
+dest_files=["res://.godot/imported/3D-Gridmap.blend-dcdf5ae90c5514545e61145aaad42f52.scn"]
 
 [params]
 

@@ -5,7 +5,7 @@ var input_raw
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _process(delta):
-	input_raw = MultiplayerInput.get_stick(pID, "move_left", "move_right", "move_forward", "move_back")
+	input_raw = MultiplayerInput.get_stick(pID, "char_left", "char_right", "char_fwd", "char_back")
 	
 func _physics_process(delta):
 	var ground_vel: Vector3 = Vector3(velocity.x,0,velocity.z)
@@ -16,7 +16,7 @@ func _physics_process(delta):
 		velocity.y -= gravity * delta
 
 	# Handle Jump.
-	if MultiplayerInput.is_action_pressed(pID,"jump_button") and is_on_floor():
+	if MultiplayerInput.is_action_pressed(pID,"actn_button") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 	
 	if input_raw:

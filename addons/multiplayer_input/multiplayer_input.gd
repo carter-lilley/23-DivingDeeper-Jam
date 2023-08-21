@@ -163,7 +163,7 @@ func get_action_name(device: int, action: StringName) -> StringName:
 func _is_joypad_event(event: InputEvent) -> bool:
 	return event is InputEventJoypadButton or event is InputEventJoypadMotion
 
-#custom functions
+#my custom functions
 func get_stick(device: int, negative_x: StringName, positive_x: StringName, negative_y: StringName, positive_y: StringName, deadzone: float = -1.0) -> Vector2:
 	if device >= 0:
 		negative_x = get_action_name(device, negative_x)
@@ -173,7 +173,20 @@ func get_stick(device: int, negative_x: StringName, positive_x: StringName, nega
 	var _vec = Input.get_vector(negative_x, positive_x, negative_y, positive_y, deadzone)
 	var _vec_adj = sqr2cirlce(_vec)
 	return _vec_adj
+
+func key_stick(negative_x: StringName, positive_x: StringName, negative_y: StringName, positive_y: StringName, deadzone: float = -1.0) -> Vector2:
+	var _vec: Vector2
+	var negx = -int(Input.is_action_pressed(negative_x))
+	var posx = int(Input.is_action_pressed(positive_x))
 	
+	var negy = -int(Input.is_action_pressed(negative_y))
+	var posy = int(Input.is_action_pressed(positive_y))
+	_vec = Vector2(
+		negx + posx,
+		negy + posy
+	)
+	return _vec
+
 # Input related utilities
 func response_curve(input: Vector2, curve: Curve) -> Vector2:
 	var dir = input.normalized()

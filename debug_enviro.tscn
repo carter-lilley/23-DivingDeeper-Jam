@@ -1,8 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=9 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Texture2D" uid="uid://dsphf37edk4j6" path="res://resources/textures/dev_textures/Dark/texture_07.png" id="1_lpxu4"]
 [ext_resource type="Script" path="res://resources/scripts/character_main.gd" id="2_b48pt"]
-[ext_resource type="Script" path="res://resources/scripts/camera_main.gd" id="3_frrb8"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5yt7h"]
 sky_horizon_color = Color(0.729583, 0.780167, 0.833578, 1)
@@ -50,7 +49,3 @@ shape = SubResource("CapsuleShape3D_l4q1r")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Character"]
 mesh = SubResource("CapsuleMesh_rtbp4")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.19568, 6.45774)
-script = ExtResource("3_frrb8")
