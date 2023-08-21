@@ -16,7 +16,7 @@ func _physics_process(delta):
 		velocity.y -= gravity * delta
 
 	# Handle Jump.
-	if MultiplayerInput.is_action_pressed(pID,"actn_button") and is_on_floor():
+	if MultiplayerInput.is_action_pressed(pID,"jump_button") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 	
 	if input_raw:

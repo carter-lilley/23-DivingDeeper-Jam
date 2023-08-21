@@ -51,6 +51,21 @@ func vec3_vec2(vec2, axis, value):
 	array.insert(axis, value)
 	return Vector3(array[0], array[1], array[2])
 
+func normalize_rot_deg(rot_deg: float) -> float:
+	# Calculate the full rotations (in multiples of 360 degrees)
+	var full_rotations = int(rot_deg / 360)
+	
+	# Normalize the Y-axis to -180 to 180 degrees
+	rot_deg = fmod(rot_deg, 360.0)
+	if rot_deg < -180.0:
+		rot_deg += 360.0
+	elif rot_deg > 180.0:
+		rot_deg -= 360.0
+	
+	# Add back the full rotations
+	rot_deg += full_rotations * 360.0
+	return (rot_deg)
+
 func ShortestRot(q1:Quaternion,q2:Quaternion) -> Quaternion:
 	if q1.dot(q2) < 0:
 		return q1 * QuatMultiply(q2,-1).inverse()
