@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=9 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Texture2D" uid="uid://dsphf37edk4j6" path="res://resources/textures/dev_textures/Dark/texture_07.png" id="1_lpxu4"]
-[ext_resource type="Script" path="res://resources/scripts/character_main.gd" id="2_b48pt"]
 [ext_resource type="Script" path="res://resources/scripts/debug_cam.gd" id="3_m4wsd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5yt7h"]
@@ -43,7 +42,6 @@ size = Vector3(15, 0.1, 15)
 
 [node name="Character" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.38691, 0)
-script = ExtResource("2_b48pt")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Character"]
 shape = SubResource("CapsuleShape3D_l4q1r")

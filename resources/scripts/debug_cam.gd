@@ -69,6 +69,7 @@ func _input(event):
 		device_id = -1
 	# Process mouse input for camera rotation
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		device_id = -1
 		var remap_vec : Vector2 = Vector2(event.relative.y,event.relative.x)
 		var cam_vec : Vector3 = Globals.vec3_vec2(remap_vec, 2, 0)
 		tar_rot -= cam_vec * mouse_sensitivity
