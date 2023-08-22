@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://cfg36gpiq8umv"]
+
+[ext_resource type="Script" path="res://resources/scripts/GridMap-Gen.gd" id="1_f5chb"]
+[ext_resource type="MeshLibrary" uid="uid://bqrjr7puhd5dv" path="res://resources/models/tilemap_meshlib.tres" id="1_s6xfp"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_meoi8"]
+agent_max_climb = 1.0
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_hn0uj"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_fjk1n"]
+size = Vector2(0, 0)
+
+[node name="Floor_Gen_Root" type="Node3D"]
+script = ExtResource("1_f5chb")
+
+[node name="Ground-Zone" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_meoi8")
+
+[node name="Ground-Gridmap" type="GridMap" parent="Ground-Zone"]
+mesh_library = ExtResource("1_s6xfp")
+collision_mask = 7
+
+[node name="Flight-Zone" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+navigation_mesh = SubResource("NavigationMesh_hn0uj")
+navigation_layers = 2
+
+[node name="Flight-Mesh" type="MeshInstance3D" parent="Flight-Zone"]
+visible = false
+mesh = SubResource("PlaneMesh_fjk1n")

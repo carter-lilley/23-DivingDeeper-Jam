@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=8 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
 [ext_resource type="PackedScene" uid="uid://cfg36gpiq8umv" path="res://resources/prefabs/floor_gen_root.tscn" id="2_hfi5n"]
+[ext_resource type="PackedScene" uid="uid://ssmpvyme26it" path="res://resources/prefabs/enemy.tscn" id="3_0sbkc"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5yt7h"]
 sky_horizon_color = Color(0.729583, 0.780167, 0.833578, 1)
@@ -38,8 +39,6 @@ shadow_enabled = true
 
 [node name="Character" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.436, 0)
-collision_layer = 2
-collision_mask = 5
 script = ExtResource("2_788qd")
 metadata/_edit_group_ = true
 
@@ -52,3 +51,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320683, 0)
 [node name="Camera3D" type="Camera3D" parent="Character/Head"]
 
 [node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]
+floor_size = 15
+
+[node name="Enemy" parent="." instance=ExtResource("3_0sbkc")]

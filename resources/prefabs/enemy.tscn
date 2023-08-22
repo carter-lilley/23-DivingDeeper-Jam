@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://ssmpvyme26it"]
+
+[ext_resource type="Script" path="res://resources/scripts/Debug_Enemy.gd" id="1_lopkh"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_g40il"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_2axnn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a341j"]
+
+[node name="Enemy" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_lopkh")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+debug_enabled = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_g40il")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_2axnn")
+surface_material_override/0 = SubResource("StandardMaterial3D_a341j")
+
+[node name="Interact_Radius" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 2
+
+[node name="Interact_Radius-Col" type="CollisionShape3D" parent="Interact_Radius"]
+transform = Transform3D(0.999996, -0.00241524, -0.00135172, 0.00241694, 0.999996, 0.00124818, 0.00134868, -0.00125147, 0.999998, 0, 0, 0)
+
+[connection signal="body_entered" from="Interact_Radius" to="." method="_on_interact_radius_body_entered"]
