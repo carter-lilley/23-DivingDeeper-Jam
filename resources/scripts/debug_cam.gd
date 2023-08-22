@@ -52,8 +52,7 @@ func _process(delta):
 		var remap_vec : Vector2 = Vector2(cam_input.y,cam_input.x)
 		var cam_vec : Vector3 = Globals.vec3_vec2(remap_vec, 2, 0)
 		tar_rot -= cam_vec*stick_sensitivity*delta
-	
-	print(tar_rot)
+
 	tar_rot.x = clamp(tar_rot.x, -90, 90)
 	tar_rot.y = Globals.normalize_rot_deg(tar_rot.y)
 	
