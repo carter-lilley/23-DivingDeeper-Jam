@@ -67,6 +67,11 @@ func behavior(delta):
 		move_and_slide()
 		return
 
+###function called from raycast collision
+func hit():
+	print("HIT")
+	queue_free()
+
 #GODOT doc helper functions for disabling bitmasks
 static func enable_bitmask_inx(_bitmask: int, _index: int) -> int:
 	return _bitmask | (1 << _index)
@@ -75,7 +80,7 @@ static func disable_bitmask_inx(_bitmask: int, _index: int) -> int:
 	return _bitmask & ~(1 << _index)
 
 #signal for when player enters alert radius
-func _on_interact_radius_body_entered(body):
+func _on_interact_radius_body_entered(_body):
 	alert = true
 	pass # Replace with function body.
 	
