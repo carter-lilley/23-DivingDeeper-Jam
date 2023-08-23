@@ -9,6 +9,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var col: CollisionShape3D = $CollisionShape3D
+@onready var raycast: RayCast3D = $RayCast
 
 #Camera functionality
 #Capture the mouse cursor when you enter the game (i.e. make disappear, restrict to window)
@@ -36,11 +37,12 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("select_button"):
 		get_tree().reload_current_scene()
 
+#Handle shooting
 	if Input.is_action_pressed("shoot_button"):
 		var shoot_ray_col: Dictionary = Globals.fire_ray(space_state, head.global_position, -camera.global_transform.basis.z, 100,0b00000000000000010101)
 		if shoot_ray_col:
 			DrawLine3d.DrawCube(shoot_ray_col.position, 0.05, Color(1, 0, 0))
-	
+
 	if Input.is_action_pressed("crouch_button"):
 		speed = CROUCH_SPEED
 		var new_head_height: Vector3 = Vector3(0,HEAD_HEIGHT/2,0)

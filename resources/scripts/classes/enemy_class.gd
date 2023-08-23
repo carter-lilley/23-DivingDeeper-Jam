@@ -12,5 +12,6 @@ enum ENEMY_TYPE {
 @export var speed = 3.0
 @export var accel = 1.5
 @export var alert_radius: float = 3.5
+@export var health = 3.0
 
 @onready var my_nav: NavigationAgent3D = $NavigationAgent3D

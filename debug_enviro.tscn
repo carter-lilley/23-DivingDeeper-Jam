@@ -51,4 +51,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320683, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Character/Head"]
 
+[node name="RayCast3D" type="RayCast3D" parent="Character"]
+
 [node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]

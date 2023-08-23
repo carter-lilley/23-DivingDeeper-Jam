@@ -4,6 +4,7 @@ extends enemy_class
 @onready var camera: Camera3D = $"../../Character/Head/Camera3D"
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var alert_area: Area3D = $Interact_Radius
+@onready var enemy_body: CollisionShape3D = $"../../CollisionShape3D"
 
 
 var alert: bool = false
@@ -20,6 +21,7 @@ func _ready():
 			new_material.albedo_color = Color.DARK_BLUE
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
+			health = 4.0
 		
 		ENEMY_TYPE.FLYING:
 			alert_radius = 5.0
@@ -28,6 +30,7 @@ func _ready():
 			new_material.albedo_color = Color.RED
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 1)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 0)
+			health = 3.0
 			
 		ENEMY_TYPE.ALERT:
 			alert_radius = 1.0
@@ -36,6 +39,7 @@ func _ready():
 			new_material.albedo_color = Color.WEB_GREEN
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
+			health = 2.0
 	
 	new_col_shape.radius = alert_radius
 	alert_area.get_child(0).shape = new_col_shape
@@ -49,6 +53,7 @@ func _physics_process(delta):
 			behavior(delta)
 		ENEMY_TYPE.ALERT:
 			behavior(delta)
+			
 
 func behavior(delta):
 	if alert:
@@ -73,3 +78,8 @@ static func disable_bitmask_inx(_bitmask: int, _index: int) -> int:
 func _on_interact_radius_body_entered(body):
 	alert = true
 	pass # Replace with function body.
+	
+#func _detect_damage():
+#	if enemy_body
+#		health = health - 1.0
+#		return
