@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=8 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
 [ext_resource type="PackedScene" uid="uid://cfg36gpiq8umv" path="res://resources/prefabs/floor_gen_root.tscn" id="2_hfi5n"]
@@ -24,6 +24,8 @@ glow_enabled = true
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
 height = 1.28668
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pqcxd"]
 
 [node name="World_Root" type="Node3D"]
 
@@ -54,3 +56,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320683, 0)
 [node name="RayCast3D" type="RayCast3D" parent="Character"]
 
 [node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("SphereShape3D_pqcxd")

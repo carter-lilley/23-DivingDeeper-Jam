@@ -12,6 +12,8 @@ var alert: bool = false
 func _ready():
 	var new_material = StandardMaterial3D.new()
 	var new_col_shape = SphereShape3D.new()
+	#set_collision_layer_value(4,true) #I was hopign to set to 4 but doesnt work as I expect...
+	add_to_group("enemies")
 	
 	match my_type:
 		ENEMY_TYPE.GROUNDED:
@@ -22,6 +24,7 @@ func _ready():
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
 			health = 4.0
+			name = "Grounded"
 		
 		ENEMY_TYPE.FLYING:
 			alert_radius = 5.0
@@ -31,6 +34,7 @@ func _ready():
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 1)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 0)
 			health = 3.0
+			name = "Flying"
 			
 		ENEMY_TYPE.ALERT:
 			alert_radius = 1.0
@@ -40,6 +44,7 @@ func _ready():
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
 			health = 2.0
+			name = "Alert"
 	
 	new_col_shape.radius = alert_radius
 	alert_area.get_child(0).shape = new_col_shape
@@ -69,8 +74,10 @@ func behavior(delta):
 
 ###function called from raycast collision
 func hit():
-	print("HIT")
-	queue_free()
+	health = health - 1.0
+	print(name + " took damage, health is " + str(health))
+	if health == 0.0:
+		queue_free()
 
 #GODOT doc helper functions for disabling bitmasks
 static func enable_bitmask_inx(_bitmask: int, _index: int) -> int:

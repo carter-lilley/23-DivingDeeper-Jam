@@ -38,11 +38,12 @@ func _physics_process(delta):
 		get_tree().reload_current_scene()
 
 #Handle shooting
-	if Input.is_action_pressed("shoot_button"):
+	if Input.is_action_just_pressed("shoot_button"):
 		var shoot_ray_col: Dictionary = Globals.fire_ray(space_state, head.global_position, -camera.global_transform.basis.z, 100,0b00000000000000010101)
 		if shoot_ray_col:
 			var col_layer = shoot_ray_col.collider.collision_layer
-			if col_layer == 4:
+			print("Collision layer is " + str(col_layer))
+			if col_layer == 4: 
 				shoot_ray_col.collider.call("hit")
 			DrawLine3d.DrawCube(shoot_ray_col.position, 0.05, Color(1, 0, 0))
 
