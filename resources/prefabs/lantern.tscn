@@ -1,18 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://dttkwb7gmbt4d"]
+[gd_scene load_steps=3 format=3 uid="uid://dttkwb7gmbt4d"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_wmntr"]
 size = Vector3(0.1, 0.1, 0.1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7eoiq"]
+emission_enabled = true
+emission = Color(0.909804, 0.658824, 0.537255, 1)
+emission_energy_multiplier = 2.0
+
 [node name="Node3D" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-visible = false
 mesh = SubResource("BoxMesh_wmntr")
 skeleton = NodePath("../Lantern")
+surface_material_override/0 = SubResource("StandardMaterial3D_7eoiq")
 
 [node name="Lantern" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.113849, 0)
 light_color = Color(0.909804, 0.658824, 0.537255, 1)
 light_energy = 5.796
-omni_range = 5.268
-omni_attenuation = 0.329877
+light_volumetric_fog_energy = 16.0
+omni_range = 1.756
+omni_attenuation = 6.77228e-05

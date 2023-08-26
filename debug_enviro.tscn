@@ -1,31 +1,38 @@
-[gd_scene load_steps=13 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=19 format=3 uid="uid://5bx28ey7jlr8"]
 
-[ext_resource type="Script" path="res://hand_spring.gd" id="2_4sny8"]
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
 [ext_resource type="PackedScene" uid="uid://cfg36gpiq8umv" path="res://resources/prefabs/floor_gen_root.tscn" id="2_hfi5n"]
 [ext_resource type="Shader" path="res://pixelation.gdshader" id="2_yruwc"]
-[ext_resource type="PackedScene" uid="uid://dttkwb7gmbt4d" path="res://resources/prefabs/lantern.tscn" id="4_qpteu"]
+[ext_resource type="Script" path="res://resources/scripts/Frustum-Shader.gd" id="3_0vd5i"]
+[ext_resource type="Script" path="res://resources/scripts/hand_spring.gd" id="3_fswpy"]
+[ext_resource type="Script" path="res://resources/scripts/Enviro-Particles.gd" id="6_y5pqv"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5yt7h"]
-sky_horizon_color = Color(0.729583, 0.780167, 0.833578, 1)
-ground_bottom_color = Color(0.533333, 0.666667, 0.784314, 1)
-ground_horizon_color = Color(0.729583, 0.780167, 0.833578, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0u17n"]
+sky_horizon_color = Color(0, 0, 0, 1)
+ground_bottom_color = Color(0.137255, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
 
-[sub_resource type="Sky" id="Sky_aufgb"]
-sky_material = SubResource("ProceduralSkyMaterial_5yt7h")
+[sub_resource type="Sky" id="Sky_vkl0n"]
+sky_material = SubResource("ProceduralSkyMaterial_0u17n")
 
-[sub_resource type="Environment" id="Environment_tkfdw"]
-background_mode = 1
-background_color = Color(0.00784314, 0.00784314, 0.0117647, 1)
-sky = SubResource("Sky_aufgb")
+[sub_resource type="Environment" id="Environment_4r7oc"]
+background_mode = 2
+sky = SubResource("Sky_vkl0n")
 tonemap_mode = 2
-ssao_intensity = 5.51
-ssao_sharpness = 1.0
+ssao_enabled = true
+ssao_radius = 0.48
+ssao_intensity = 16.0
 sdfgi_enabled = true
-glow_enabled = true
+sdfgi_read_sky_light = false
+sdfgi_y_scale = 2
 fog_enabled = true
-fog_light_color = Color(0.0392157, 0.027451, 0.0509804, 1)
-fog_density = 0.35
+fog_light_color = Color(0.0784314, 0, 0.0666667, 1)
+fog_light_energy = 1.21
+fog_sun_scatter = 0.13
+fog_density = 0.1455
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.04
+volumetric_fog_albedo = Color(0.309804, 0.243137, 0.301961, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
@@ -40,13 +47,51 @@ shader = ExtResource("2_yruwc")
 [sub_resource type="BoxMesh" id="BoxMesh_nq0kd"]
 size = Vector3(0.1, 0.1, 0.5)
 
+[sub_resource type="Gradient" id="Gradient_4joe2"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xs3nx"]
+gradient = SubResource("Gradient_4joe2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_teckn"]
+lifetime_randomness = 0.5
+emission_shape = 3
+emission_box_extents = Vector3(10, 10, 10)
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, -2, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
+damping_min = 2.0
+damping_max = 5.0
+scale_min = 0.1
+scale_max = 0.15
+color_ramp = SubResource("GradientTexture1D_xs3nx")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_god0t"]
+transparency = 1
+vertex_color_use_as_albedo = true
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_xetce"]
+material = SubResource("StandardMaterial3D_god0t")
+size = Vector2(0.1, 0.1)
+
 [node name="World_Root" type="Node3D"]
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_energy = 0.35
+light_indirect_energy = 0.3
+shadow_enabled = true
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_tkfdw")
+environment = SubResource("Environment_4r7oc")
 
 [node name="Character" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.436, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("2_788qd")
@@ -63,12 +108,12 @@ current = true
 
 [node name="Pixelation" type="MeshInstance3D" parent="Character/Head/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.364722)
-visible = false
 mesh = SubResource("QuadMesh_af5du")
 surface_material_override/0 = SubResource("ShaderMaterial_u72iq")
+script = ExtResource("3_0vd5i")
 
 [node name="Hands" type="Node3D" parent="Character"]
-script = ExtResource("2_4sny8")
+script = ExtResource("3_fswpy")
 damping = 5.0
 stiffness = 10.0
 
@@ -77,6 +122,10 @@ mesh = SubResource("BoxMesh_nq0kd")
 
 [node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]
 
-[node name="Lantern" parent="." instance=ExtResource("4_qpteu")]
-
-[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+[node name="Enviro-Parts" type="GPUParticles3D" parent="."]
+amount = 100
+speed_scale = 0.5
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_teckn")
+draw_pass_1 = SubResource("QuadMesh_xetce")
+script = ExtResource("6_y5pqv")
