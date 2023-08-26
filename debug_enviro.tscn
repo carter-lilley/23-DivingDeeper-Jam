@@ -1,9 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=18 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
+[ext_resource type="Shader" path="res://fullscreen_quad_pixels.gdshader" id="2_chm83"]
 [ext_resource type="PackedScene" uid="uid://cfg36gpiq8umv" path="res://resources/prefabs/floor_gen_root.tscn" id="2_hfi5n"]
-[ext_resource type="Shader" path="res://pixelation.gdshader" id="2_yruwc"]
-[ext_resource type="Script" path="res://resources/scripts/Frustum-Shader.gd" id="3_0vd5i"]
 [ext_resource type="Script" path="res://resources/scripts/hand_spring.gd" id="3_fswpy"]
 [ext_resource type="Script" path="res://resources/scripts/Enviro-Particles.gd" id="6_y5pqv"]
 
@@ -38,11 +37,13 @@ volumetric_fog_albedo = Color(0.309804, 0.243137, 0.301961, 1)
 radius = 0.307044
 height = 1.28668
 
-[sub_resource type="QuadMesh" id="QuadMesh_af5du"]
+[sub_resource type="QuadMesh" id="QuadMesh_cn8fe"]
+flip_faces = true
+size = Vector2(2, 2)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_u72iq"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v5t2u"]
 render_priority = 0
-shader = ExtResource("2_yruwc")
+shader = ExtResource("2_chm83")
 
 [sub_resource type="BoxMesh" id="BoxMesh_nq0kd"]
 size = Vector3(0.1, 0.1, 0.5)
@@ -68,7 +69,9 @@ scale_max = 0.15
 color_ramp = SubResource("GradientTexture1D_xs3nx")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_god0t"]
-transparency = 1
+transparency = 3
+alpha_hash_scale = 1.0
+alpha_antialiasing_mode = 0
 vertex_color_use_as_albedo = true
 billboard_mode = 3
 particles_anim_h_frames = 1
@@ -107,10 +110,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320683, 0)
 current = true
 
 [node name="Pixelation" type="MeshInstance3D" parent="Character/Head/Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.364722)
-mesh = SubResource("QuadMesh_af5du")
-surface_material_override/0 = SubResource("ShaderMaterial_u72iq")
-script = ExtResource("3_0vd5i")
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_cn8fe")
+surface_material_override/0 = SubResource("ShaderMaterial_v5t2u")
 
 [node name="Hands" type="Node3D" parent="Character"]
 script = ExtResource("3_fswpy")

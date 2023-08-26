@@ -65,6 +65,7 @@ func spawnEnemyAtPosition(_pos):
 	enemy.global_transform.origin = gridmap.map_to_local(_pos)
 	enemy.my_type = randi_range(0,2)
 	add_child(enemy)
+	
 func spawnLanternAtPosition(_pos):
 	# Create and place an enemy at the specified position
 	var lantern = preload("res://resources/prefabs/lantern.tscn").instantiate()
