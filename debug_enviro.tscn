@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=10 format=3 uid="uid://5bx28ey7jlr8"]
 
+[ext_resource type="Script" path="res://hand_spring.gd" id="2_4sny8"]
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
 [ext_resource type="PackedScene" uid="uid://cfg36gpiq8umv" path="res://resources/prefabs/floor_gen_root.tscn" id="2_hfi5n"]
 
@@ -24,6 +25,9 @@ glow_enabled = true
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
 height = 1.28668
+
+[sub_resource type="BoxMesh" id="BoxMesh_nq0kd"]
+size = Vector3(0.1, 0.1, 0.5)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_pqcxd"]
 
@@ -53,7 +57,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320683, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Character/Head"]
 
-[node name="RayCast3D" type="RayCast3D" parent="Character"]
+[node name="Hands" type="Node3D" parent="Character"]
+script = ExtResource("2_4sny8")
+damping = 5.0
+stiffness = 10.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Character/Hands"]
+mesh = SubResource("BoxMesh_nq0kd")
 
 [node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]
 

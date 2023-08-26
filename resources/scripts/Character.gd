@@ -9,7 +9,6 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var col: CollisionShape3D = $CollisionShape3D
-@onready var raycast: RayCast3D = $RayCast
 
 #Camera functionality
 #Capture the mouse cursor when you enter the game (i.e. make disappear, restrict to window)
