@@ -1,4 +1,4 @@
-extends Node
+extends Node3D
 
 # Adjustable parameters
 @export var damping = 0.1
@@ -14,7 +14,7 @@ var offset = Vector3.ZERO
 func _physics_process(delta):
 	
 	var offset = cam.global_transform.basis.z * offset_distance # offset_distance is the desired distance from the camera
-	self.translation = cam.global_transform.origin + offset
+#	self.position = cam.global_transform.origin + offset
 	
 	# Calculate the desired rotation based on the parent's rotation
 	var cam_rot = cam.global_transform.basis.get_euler()

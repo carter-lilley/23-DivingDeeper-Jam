@@ -7,6 +7,7 @@ extends Node
 
 @export var floor_size: int = 15
 @export var enemy_num:int = 12
+@export var light_num:int = 12
 
 var noise := FastNoiseLite.new()
 var weightedRange := [
@@ -48,14 +49,27 @@ func spawnEnemies():
 		if gridmap.get_cell_item(cell_pos) == 0:
 			# The cell is empty, so spawn an enemy at this position
 			spawnEnemyAtPosition(cell_pos)
+	for i in range(light_num):
+		# Generate random positions within the bounds
+		var random_x = randi_range(-floor_size / 2, floor_size / 2)
+		var random_z = randi_range(-floor_size / 2, floor_size / 2)
+		var cell_pos = Vector3i(random_x, 1, random_z)
+		# Check if the cell is empty
+		if gridmap.get_cell_item(cell_pos) == 0:
+			# The cell is empty, so spawn an enemy at this position
+			spawnLanternAtPosition(cell_pos)
 
 func spawnEnemyAtPosition(_pos):
 	# Create and place an enemy at the specified position
 	var enemy = preload("res://resources/prefabs/enemy.tscn").instantiate()
 	enemy.global_transform.origin = gridmap.map_to_local(_pos)
 	enemy.my_type = randi_range(0,2)
-#	enemy.my_type = 1
 	add_child(enemy)
+func spawnLanternAtPosition(_pos):
+	# Create and place an enemy at the specified position
+	var lantern = preload("res://resources/prefabs/lantern.tscn").instantiate()
+	lantern.global_transform.origin = gridmap.map_to_local(_pos)
+	add_child(lantern)
 
 func randomBasis():
 	# Generate a random rotation in increments of 90 degrees on the Y-axis

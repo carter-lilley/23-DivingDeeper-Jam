@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=13 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://hand_spring.gd" id="2_4sny8"]
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
 [ext_resource type="PackedScene" uid="uid://cfg36gpiq8umv" path="res://resources/prefabs/floor_gen_root.tscn" id="2_hfi5n"]
+[ext_resource type="Shader" path="res://pixelation.gdshader" id="2_yruwc"]
+[ext_resource type="PackedScene" uid="uid://dttkwb7gmbt4d" path="res://resources/prefabs/lantern.tscn" id="4_qpteu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5yt7h"]
 sky_horizon_color = Color(0.729583, 0.780167, 0.833578, 1)
@@ -14,33 +16,34 @@ sky_material = SubResource("ProceduralSkyMaterial_5yt7h")
 
 [sub_resource type="Environment" id="Environment_tkfdw"]
 background_mode = 1
-background_color = Color(0.176471, 0.227451, 0.301961, 1)
+background_color = Color(0.00784314, 0.00784314, 0.0117647, 1)
 sky = SubResource("Sky_aufgb")
-ambient_light_source = 3
 tonemap_mode = 2
-ssao_enabled = true
+ssao_intensity = 5.51
+ssao_sharpness = 1.0
 sdfgi_enabled = true
 glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.0392157, 0.027451, 0.0509804, 1)
+fog_density = 0.35
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
 height = 1.28668
 
+[sub_resource type="QuadMesh" id="QuadMesh_af5du"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u72iq"]
+render_priority = 0
+shader = ExtResource("2_yruwc")
+
 [sub_resource type="BoxMesh" id="BoxMesh_nq0kd"]
 size = Vector3(0.1, 0.1, 0.5)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_pqcxd"]
 
 [node name="World_Root" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_tkfdw")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-light_color = Color(1, 1, 0.905882, 1)
-light_energy = 0.4
-shadow_enabled = true
 
 [node name="Character" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.436, 0)
@@ -56,6 +59,13 @@ shape = SubResource("CapsuleShape3D_bapjq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320683, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Character/Head"]
+current = true
+
+[node name="Pixelation" type="MeshInstance3D" parent="Character/Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.364722)
+visible = false
+mesh = SubResource("QuadMesh_af5du")
+surface_material_override/0 = SubResource("ShaderMaterial_u72iq")
 
 [node name="Hands" type="Node3D" parent="Character"]
 script = ExtResource("2_4sny8")
@@ -67,7 +77,6 @@ mesh = SubResource("BoxMesh_nq0kd")
 
 [node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+[node name="Lantern" parent="." instance=ExtResource("4_qpteu")]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
-shape = SubResource("SphereShape3D_pqcxd")
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
