@@ -9,6 +9,13 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var col: CollisionShape3D = $CollisionShape3D
+@onready var healthbar = $"../Control/ColorRect"
+@onready var speaker = $AudioStreamPlayer
+
+@onready var shoot_noise = AudioStreamWAV("res://resources/audio/ShootFireball.wav")
+@onready var player_take_damage = AudioStreamWAV("res://resources/audio/ShootFireball.wav")
+@onready var death_noise = AudioStreamWAV("res://resources/audio/ShootFireball.wav")
+@onready var walking_noise = AudioStreamWAV("res://resources/audio/ShootFireball.wav")
 
 #Camera functionality
 #Capture the mouse cursor when you enter the game (i.e. make disappear, restrict to window)
@@ -39,6 +46,7 @@ func _physics_process(delta):
 #Handle shooting
 	if Input.is_action_just_pressed("shoot_button"):
 		var shoot_ray_col: Dictionary = Globals.fire_ray(space_state, head.global_position, -camera.global_transform.basis.z, 100,0b00000000000000010101)
+		play_noise(shoot_noise)
 		if shoot_ray_col:
 			var col_layer = shoot_ray_col.collider.collision_layer
 			print("Collision layer is " + str(col_layer))
@@ -101,3 +109,24 @@ func _headbob(time) -> Vector3:
 	pos.y = sin(time * BOB_FREQ) * BOB_AMP
 	pos.x = cos(time * BOB_FREQ / 2) * BOB_AMP
 	return pos
+
+#Handle Player Damage
+func _on_area_3d_area_entered(area):
+	print(area)
+	if area.is_in_group("Enemy"):
+		CURRENT_HEALTH = CURRENT_HEALTH - 1.0
+		print(CURRENT_HEALTH)
+		_update_UI_healthbar()
+	
+
+func _playerDeath(CURRENT_HEALTH):
+	if CURRENT_HEALTH == 0:
+		queue_free()
+		
+
+#Handle UI Updating 
+func _update_UI_healthbar():
+	healthbar.scale.x = CURRENT_HEALTH / MAX_HEALTH
+	
+func play_noise(sfx):
+	speaker.stream = sfx

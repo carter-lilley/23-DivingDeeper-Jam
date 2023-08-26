@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=20 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
 [ext_resource type="Shader" path="res://fullscreen_quad_pixels.gdshader" id="2_chm83"]
@@ -48,6 +48,8 @@ shader = ExtResource("2_chm83")
 [sub_resource type="BoxMesh" id="BoxMesh_nq0kd"]
 size = Vector3(0.1, 0.1, 0.5)
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tjn71"]
+
 [sub_resource type="Gradient" id="Gradient_4joe2"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
@@ -82,6 +84,8 @@ particles_anim_loop = false
 material = SubResource("StandardMaterial3D_god0t")
 size = Vector2(0.1, 0.1)
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qgx13"]
+
 [node name="World_Root" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -93,11 +97,28 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_4r7oc")
 
-[node name="Character" type="CharacterBody3D" parent="."]
+[node name="Character" type="CharacterBody3D" parent="." groups=["Player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("2_788qd")
+MOUSE_SENS = null
+STICK_SENS = null
+CAM_ACCEL = null
+BASE_FOV = null
+FOV_CHANGE = null
+HEAD_HEIGHT = null
+COLLISION_HEIGHT = null
+WALK_SPEED = null
+SPRINT_SPEED = null
+CROUCH_SPEED = null
+ACCEL = null
+JUMP_VELOCITY = null
+BOB_FREQ = null
+BOB_AMP = null
+t_bob = null
+CURRENT_HEALTH = null
+MAX_HEALTH = null
 metadata/_edit_group_ = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Character"]
@@ -122,6 +143,14 @@ stiffness = 10.0
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Character/Hands"]
 mesh = SubResource("BoxMesh_nq0kd")
 
+[node name="Area3D" type="Area3D" parent="Character"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Character/Area3D"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_tjn71")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Character"]
+
 [node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]
 
 [node name="Enviro-Parts" type="GPUParticles3D" parent="."]
@@ -131,3 +160,31 @@ fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_teckn")
 draw_pass_1 = SubResource("QuadMesh_xetce")
 script = ExtResource("6_y5pqv")
+
+[node name="Control" type="Control" parent="."]
+material = SubResource("CanvasItemMaterial_qgx13")
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -45.0
+offset_right = 405.0
+offset_bottom = -5.0
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.239216, 0.0823529, 0.0823529, 1)
+
+[node name="AudioListener3D" type="AudioListener3D" parent="."]
+current = true
+
+[connection signal="area_entered" from="Character/Area3D" to="Character" method="_on_area_3d_area_entered"]

@@ -4,7 +4,7 @@ extends enemy_class
 @onready var camera: Camera3D = $"../../Character/Head/Camera3D"
 @onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var alert_area: Area3D = $Interact_Radius
-@onready var enemy_body: CollisionShape3D = $"../../CollisionShape3D"
+@onready var col: CollisionShape3D = $"../../CollisionShape3D"
 
 
 var alert: bool = false
@@ -91,7 +91,4 @@ func _on_interact_radius_body_entered(_body):
 	alert = true
 	pass # Replace with function body.
 	
-#func _detect_damage():
-#	if enemy_body
-#		health = health - 1.0
-#		return
+

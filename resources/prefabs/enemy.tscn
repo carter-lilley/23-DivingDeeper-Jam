@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://ssmpvyme26it"]
+[gd_scene load_steps=6 format=3 uid="uid://ssmpvyme26it"]
 
 [ext_resource type="Script" path="res://resources/scripts/Debug_Enemy.gd" id="1_lopkh"]
 
@@ -8,7 +8,9 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a341j"]
 
-[node name="Enemy" type="CharacterBody3D"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_vmxv6"]
+
+[node name="Enemy" type="CharacterBody3D" groups=["Enemy"]]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_lopkh")
@@ -29,4 +31,12 @@ collision_mask = 2
 [node name="Interact_Radius-Col" type="CollisionShape3D" parent="Interact_Radius"]
 transform = Transform3D(0.999996, -0.00241524, -0.00135172, 0.00241694, 0.999996, 0.00124818, 0.00134868, -0.00125147, 0.999998, 0, 0, 0)
 
+[node name="Area3D" type="Area3D" parent="." groups=["Enemy"]]
+input_ray_pickable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+shape = SubResource("SphereShape3D_vmxv6")
+
 [connection signal="body_entered" from="Interact_Radius" to="." method="_on_interact_radius_body_entered"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

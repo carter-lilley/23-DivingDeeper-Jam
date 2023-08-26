@@ -21,3 +21,7 @@ class_name player_class
 @export var BOB_FREQ: float = 2.0 #Essentially, how often your character takes a 'step' -- Frequency
 @export var BOB_AMP: float = 0.08 #How high up your camera goes (or how hard/high the bob is) -- Amplitude
 @export var t_bob: float = 0.0 #Variable to pass to the sin function to tell it how far along we are at any given moment
+
+#Player Variables
+@export var CURRENT_HEALTH = 3.0
+@export var MAX_HEALTH = 3.0
