@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://bv8wmnbrn3inv"
-path="res://.godot/imported/Floorbreak.wav-ee81fababc755d7f429d9b884965c690.sample"
+path="res://.godot/imported/Floorbreak.wav-335510e995bd29090f6f6ddd3cca3740.sample"
 
 [deps]
 
-source_file="res://resources/audio/Floorbreak.wav"
-dest_files=["res://.godot/imported/Floorbreak.wav-ee81fababc755d7f429d9b884965c690.sample"]
+source_file="res://resources/audio/sfx/Floorbreak.wav"
+dest_files=["res://.godot/imported/Floorbreak.wav-335510e995bd29090f6f6ddd3cca3740.sample"]
 
 [params]
 

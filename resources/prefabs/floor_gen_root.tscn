@@ -4,7 +4,7 @@
 [ext_resource type="MeshLibrary" uid="uid://bqrjr7puhd5dv" path="res://resources/models/tilemap_meshlib.tres" id="1_s6xfp"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_meoi8"]
-agent_max_climb = 1.0
+agent_height = 0.5
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_hn0uj"]
 

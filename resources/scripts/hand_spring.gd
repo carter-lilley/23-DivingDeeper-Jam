@@ -13,7 +13,7 @@ var offset = Vector3.ZERO
 @export var offset_distance :float = 0.0
 func _physics_process(delta):
 	
-	var offset = cam.global_transform.basis.z * offset_distance # offset_distance is the desired distance from the camera
+#	var offset = cam.global_transform.basis.z * offset_distance # offset_distance is the desired distance from the camera
 #	self.position = cam.global_transform.origin + offset
 	
 	# Calculate the desired rotation based on the parent's rotation

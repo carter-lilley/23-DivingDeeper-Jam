@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://bjqc2fwli5483"]
+
+[ext_resource type="QuadMesh" uid="uid://dcx503w7eg3al" path="res://resources/particles/blocky_part.tres" id="1_rmwd8"]
+
+[sub_resource type="Gradient" id="Gradient_jjaau"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_73utm"]
+gradient = SubResource("Gradient_jjaau")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_c73k7"]
+lifetime_randomness = 0.11
+direction = Vector3(0, 0.5, 1)
+spread = 180.0
+flatness = 0.62
+initial_velocity_min = 4.0
+initial_velocity_max = 6.0
+damping_min = 4.0
+damping_max = 7.289
+scale_min = 0.1
+scale_max = 1.3
+color_ramp = SubResource("GradientTexture1D_73utm")
+
+[node name="Burst-Part" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.273188, 0)
+emitting = false
+amount = 6
+lifetime = 0.3
+one_shot = true
+speed_scale = 0.6
+explosiveness = 0.3
+randomness = 0.07
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_c73k7")
+draw_pass_1 = ExtResource("1_rmwd8")

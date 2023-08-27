@@ -40,6 +40,30 @@ func get_child_by_type(node: Node, type_name: String) -> Node:
 			return child
 	return null
 
+#ONE SHOTS-------------------------------------------------------
+
+func oneshot_sound(sfx: AudioStream, position: Vector3, volume: float = 1.0):
+	var audioPlayer = AudioStreamPlayer3D.new()
+	audioPlayer.stream = sfx
+	audioPlayer.transform.origin = position
+	audioPlayer.volume_db = volume # Convert volume to dB
+	audioPlayer.connect("finished", _on_audio_player_finished)
+	get_tree().get_root().add_child(audioPlayer)
+	audioPlayer.play()
+
+func _on_audio_player_finished(audioPlayer):
+	audioPlayer.queue_free()
+
+func oneshot_part(particleSystem: PackedScene, position: Vector3):
+	var instance = particleSystem.instantiate()
+	instance.transform.origin = position
+	instance.connect("finished", _on_particle_system_finished)
+	get_parent().add_child(instance)
+	instance.restart()
+
+func _on_particle_system_finished(instance):
+	instance.queue_free()
+
 #MATH UTILS-------------------------------------------------------
 func vec2_vec3(vec3, axis):
 	var array = [vec3.x, vec3.y, vec3.z]

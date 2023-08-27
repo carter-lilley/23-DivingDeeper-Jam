@@ -64,6 +64,7 @@ func spawnEnemyAtPosition(_pos):
 	var enemy = preload("res://resources/prefabs/enemy.tscn").instantiate()
 	enemy.global_transform.origin = gridmap.map_to_local(_pos)
 	enemy.my_type = randi_range(0,2)
+#	enemy.my_type = 1
 	add_child(enemy)
 	
 func spawnLanternAtPosition(_pos):
@@ -82,11 +83,11 @@ func randomBasis():
 	return new_rot
 
 # Function to select a random value from the weighted range
-func selectRandomWeightedValue(range):
+func selectRandomWeightedValue(_range):
 	var totalWeight = 0
 
 	# Calculate the total weight of all items in the range
-	for item in range:
+	for item in _range:
 		totalWeight += item["weight"]
 
 	# Generate a random number within the total weight
@@ -94,10 +95,10 @@ func selectRandomWeightedValue(range):
 
 	# Iterate through the range to find the selected value
 	var cumulativeWeight = 0
-	for item in range:
+	for item in _range:
 		cumulativeWeight += item["weight"]
 		if randomValue < cumulativeWeight:
 			return item["value"]
 
 	# This should not happen, but if it does, return the last value as a fallback
-	return range[-1]["value"]
+	return _range[-1]["value"]
