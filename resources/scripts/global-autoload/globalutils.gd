@@ -122,10 +122,14 @@ func createTimer(wait_time: float, one_shot: bool, method: Callable, start: bool
 
 	return timer
 	
-func formatTime(seconds: float) -> String:
+func formatTime(seconds: float, includeMilliseconds: bool) -> String:
 	var minutes = int(seconds / 60)
 	var remainingSeconds = int(seconds) % 60
-	return pad_zero(minutes) + ":" + pad_zero(remainingSeconds)
+	var milliseconds = int((seconds - floor(seconds)) * 1000)
+	var formattedTime = pad_zero(minutes) + ":" + pad_zero(remainingSeconds)
+	if includeMilliseconds:
+		formattedTime += "." + padMilliseconds(milliseconds)
+	return formattedTime
 
 func pad_zero(number: int) -> String:
 	var strNumber = str(number)
@@ -133,6 +137,13 @@ func pad_zero(number: int) -> String:
 		strNumber = "0" + strNumber
 	return strNumber
 
+func padMilliseconds(value: int) -> String:
+	if value < 10:
+		return "00" + str(value)
+	elif value < 100:
+		return "0" + str(value)
+	else:
+		return str(value)
 #SPRITE UTILS-------------------------------------------------------
 func random_tint(_sprite: Sprite2D):
 	var red = randf_range(0, 1)

@@ -1,9 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=21 format=3 uid="uid://5bx28ey7jlr8"]
 
+[ext_resource type="Script" path="res://game_handler.gd" id="1_4w307"]
 [ext_resource type="Environment" uid="uid://cgrhk3h82eam2" path="res://debug_enviro-worldsettings.tres" id="1_34rio"]
 [ext_resource type="Material" uid="uid://bki8s4v8j1tu" path="res://resources/particles/ambient_particles_process.tres" id="2_004ft"]
 [ext_resource type="Script" path="res://resources/scripts/Character.gd" id="2_788qd"]
-[ext_resource type="PackedScene" uid="uid://cfg36gpiq8umv" path="res://resources/prefabs/floor_gen_root.tscn" id="2_hfi5n"]
 [ext_resource type="Script" path="res://resources/scripts/hand_spring.gd" id="3_fswpy"]
 [ext_resource type="QuadMesh" uid="uid://dcx503w7eg3al" path="res://resources/particles/blocky_part.tres" id="3_lo6jb"]
 [ext_resource type="Shader" path="res://resources/shaders/fullscreen_quad_pixels.gdshader" id="6_gopsh"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://c15kfpssy24cm" path="res://resources/models/textures/gun-albedo.png" id="8_vqvi6"]
 [ext_resource type="Script" path="res://resources/scripts/UI_Controller.gd" id="10_2r4mu"]
 [ext_resource type="Texture2D" uid="uid://c7o7eujlrm2o2" path="res://resources/models/textures/crosshair.png" id="10_7kg24"]
+[ext_resource type="AudioStream" uid="uid://brwkr2u5yfhsq" path="res://resources/audio/music/Sketch1_08-25-23.mp3" id="12_fheo1"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
@@ -63,11 +64,13 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_8y4qx")
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tjn71"]
-
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qgx13"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_gb0ad"]
+font_size = 32
+
 [node name="World_Root" type="Node3D"]
+script = ExtResource("1_4w307")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -89,7 +92,7 @@ script = ExtResource("6_y5pqv")
 [node name="Character" type="CharacterBody3D" parent="." groups=["Player"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 collision_layer = 2
-collision_mask = 5
+collision_mask = 13
 script = ExtResource("2_788qd")
 metadata/_edit_group_ = true
 
@@ -103,24 +106,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.320683, 0)
 current = true
 
 [node name="Pixelation" type="MeshInstance3D" parent="Character/Head/Camera3D"]
+visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_cn8fe")
 surface_material_override/0 = SubResource("ShaderMaterial_v5t2u")
 
 [node name="Hands" type="Node3D" parent="Character"]
 script = ExtResource("3_fswpy")
-damping = 5.0
-stiffness = 10.0
+damping = 80.0
+stiffness = 700.0
 
 [node name="Gun" type="MeshInstance3D" parent="Character/Hands"]
+transform = Transform3D(0.51, 0, 0, 0, 0.51, 0, 0, 0, 0.51, 0.185, 0.17, -0.2)
 mesh = SubResource("ArrayMesh_dy37h")
 skeleton = NodePath("")
-
-[node name="Area3D" type="Area3D" parent="Character"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Character/Area3D"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
-shape = SubResource("CapsuleShape3D_tjn71")
 
 [node name="Enemy-Light" type="OmniLight3D" parent="Character"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.113849, 0)
@@ -129,8 +128,6 @@ light_energy = 0.688
 light_volumetric_fog_energy = 2.421
 omni_range = 3.383
 omni_attenuation = 6.77228e-05
-
-[node name="Floor_Gen_Root" parent="." instance=ExtResource("2_hfi5n")]
 
 [node name="Control" type="Control" parent="."]
 material = SubResource("CanvasItemMaterial_qgx13")
@@ -157,7 +154,7 @@ grow_vertical = 0
 mouse_filter = 2
 color = Color(0.239216, 0.0823529, 0.0823529, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="Control"]
+[node name="Crosshair" type="CenterContainer" parent="Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -166,7 +163,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TextureRect" type="TextureRect" parent="Control/CenterContainer"]
+[node name="TextureRect" type="TextureRect" parent="Control/Crosshair"]
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("10_7kg24")
@@ -237,6 +234,22 @@ grow_horizontal = 0
 grow_vertical = 0
 text = "By Carter and PlantyMan"
 
-[connection signal="area_entered" from="Character/Area3D" to="Character" method="_on_area_3d_area_entered"]
+[node name="Timer" type="CenterContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 102.0
+grow_horizontal = 2
+
+[node name="Timer_Label" type="Label" parent="Control/Timer"]
+layout_mode = 2
+text = "TIME"
+label_settings = SubResource("LabelSettings_gb0ad")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_fheo1")
+volume_db = 4.5
+autoplay = true
+
 [connection signal="pressed" from="Control/ColorRect2/HBoxContainer/VBoxContainer/Button" to="Control" method="_on_button_pressed"]
 [connection signal="pressed" from="Control/ColorRect2/HBoxContainer/VBoxContainer/Button2" to="Control" method="_on_button_2_pressed"]

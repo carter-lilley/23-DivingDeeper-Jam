@@ -46,7 +46,7 @@ func _physics_process(delta):
 #Handle shooting
 	if Input.is_action_just_pressed("shoot_button"):
 		if pause_menu.visible == false:
-			Globals.oneshot_sound(sfx_player_shoot, self.position, -20.0)
+			Globals.oneshot_sound(sfx_player_shoot, self.position, -25.0)
 			var ray_dir: Vector3 = -camera.global_transform.basis.z
 			var shoot_ray_col: Dictionary = Globals.fire_ray(space_state, head.global_position, ray_dir, 100,0b00000000000000010101)
 			if shoot_ray_col:
@@ -117,8 +117,8 @@ func _headbob(time) -> Vector3:
 	pos.y = sin(time * BOB_FREQ) * BOB_AMP
 	pos.x = cos(time * BOB_FREQ / 2) * BOB_AMP
 	
-	if pos.y <= -BOB_AMP+.005 and is_on_floor():
-		Globals.oneshot_sound(sfx_player_step, self.position, -20.0)
+#	if pos.y <= -BOB_AMP+.005 and is_on_floor():
+#		Globals.oneshot_sound(sfx_player_step, self.position, -20.0)
 		
 	return pos
 
@@ -132,6 +132,7 @@ func _on_area_3d_area_entered(area):
 func _playerDeath(CURRENT_HEALTH):
 	if CURRENT_HEALTH == 0:
 		queue_free()
+
 #Handle UI Updating 
 func _update_UI_healthbar():
 	healthbar.scale.x = CURRENT_HEALTH / MAX_HEALTH

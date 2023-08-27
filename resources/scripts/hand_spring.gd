@@ -10,13 +10,10 @@ extends Node3D
 var target_rotation = Vector3.ZERO
 var velocity = Vector3.ZERO
 var offset = Vector3.ZERO
-@export var offset_distance :float = 0.0
+
 func _physics_process(delta):
-	
-#	var offset = cam.global_transform.basis.z * offset_distance # offset_distance is the desired distance from the camera
-#	self.position = cam.global_transform.origin + offset
-	
-	# Calculate the desired rotation based on the parent's rotation
+	self.position = cam.position + offset
+	# Calculate the desired rotation based on the cam rotation
 	var cam_rot = cam.global_transform.basis.get_euler()
 	target_rotation = cam_rot
 
@@ -40,4 +37,4 @@ func _physics_process(delta):
 	self.rotation += velocity * delta
 
 	# Apply a delay effect by lerping towards the target rotation
-	self.rotation = self.rotation.lerp(target_rotation, 1.0 - exp(-delay * delta))
+#	self.rotation = self.rotation.lerp(target_rotation, 1.0 - exp(-delay * delta))
