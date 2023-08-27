@@ -11,6 +11,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera = $Head/Camera3D
 @onready var col: CollisionShape3D = $CollisionShape3D
 @onready var healthbar = $"../Control/ColorRect"
+@onready var pause_menu = $"../Control/ColorRect2"
 
 @onready var one_shot_part = preload("res://resources/prefabs/burst_part.tscn")
 
@@ -42,20 +43,18 @@ func _physics_process(delta):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		set_process_input(false)
 	
-	if Input.is_action_just_pressed("select_button"):
-		get_tree().reload_current_scene()
-
 #Handle shooting
 	if Input.is_action_just_pressed("shoot_button"):
-		Globals.oneshot_sound(sfx_player_shoot, self.position, -20.0)
-		var ray_dir: Vector3 = -camera.global_transform.basis.z
-		var shoot_ray_col: Dictionary = Globals.fire_ray(space_state, head.global_position, ray_dir, 100,0b00000000000000010101)
-		if shoot_ray_col:
-			Globals.oneshot_part(one_shot_part,shoot_ray_col.position)
-			var col_layer = shoot_ray_col.collider.collision_layer
-			if col_layer == 4: 
-				shoot_ray_col.collider.call("hit",ray_dir)
-			DrawLine3d.DrawCube(shoot_ray_col.position, 0.05, Color(1, 0, 0))
+		if pause_menu.visible == false:
+			Globals.oneshot_sound(sfx_player_shoot, self.position, -20.0)
+			var ray_dir: Vector3 = -camera.global_transform.basis.z
+			var shoot_ray_col: Dictionary = Globals.fire_ray(space_state, head.global_position, ray_dir, 100,0b00000000000000010101)
+			if shoot_ray_col:
+				Globals.oneshot_part(one_shot_part,shoot_ray_col.position)
+				var col_layer = shoot_ray_col.collider.collision_layer
+				if col_layer == 4: 
+					shoot_ray_col.collider.call("hit",ray_dir)
+				DrawLine3d.DrawCube(shoot_ray_col.position, 0.05, Color(1, 0, 0))
 
 	if Input.is_action_pressed("crouch_button"):
 		speed = CROUCH_SPEED
@@ -70,6 +69,13 @@ func _physics_process(delta):
 			speed = SPRINT_SPEED
 		else:
 			speed = WALK_SPEED
+			
+	if Input.is_action_just_pressed("pause"):
+		if pause_menu.visible == false:
+			pause_menu.visible = true
+		elif pause_menu.visible == true:
+			pause_menu.visible = false
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 	#handle movement
 	# Get the input direction and handle the movement/deceleration.

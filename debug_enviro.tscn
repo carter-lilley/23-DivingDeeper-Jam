@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=20 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Environment" uid="uid://cgrhk3h82eam2" path="res://debug_enviro-worldsettings.tres" id="1_34rio"]
 [ext_resource type="Material" uid="uid://bki8s4v8j1tu" path="res://resources/particles/ambient_particles_process.tres" id="2_004ft"]
@@ -9,6 +9,8 @@
 [ext_resource type="Shader" path="res://resources/shaders/fullscreen_quad_pixels.gdshader" id="6_gopsh"]
 [ext_resource type="Script" path="res://resources/scripts/Enviro-Particles.gd" id="6_y5pqv"]
 [ext_resource type="Texture2D" uid="uid://c15kfpssy24cm" path="res://resources/models/textures/gun-albedo.png" id="8_vqvi6"]
+[ext_resource type="Script" path="res://resources/scripts/UI_Controller.gd" id="10_2r4mu"]
+[ext_resource type="Texture2D" uid="uid://c7o7eujlrm2o2" path="res://resources/models/textures/crosshair.png" id="10_7kg24"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
@@ -133,12 +135,14 @@ omni_attenuation = 6.77228e-05
 [node name="Control" type="Control" parent="."]
 material = SubResource("CanvasItemMaterial_qgx13")
 layout_mode = 3
-anchors_preset = 2
-anchor_top = 1.0
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-grow_vertical = 0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 mouse_force_pass_scroll_events = false
+script = ExtResource("10_2r4mu")
 
 [node name="ColorRect" type="ColorRect" parent="Control"]
 layout_mode = 1
@@ -153,4 +157,86 @@ grow_vertical = 0
 mouse_filter = 2
 color = Color(0.239216, 0.0823529, 0.0823529, 1)
 
+[node name="CenterContainer" type="CenterContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="Control/CenterContainer"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("10_7kg24")
+
+[node name="ColorRect2" type="ColorRect" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.490196)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/ColorRect2"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -32.5
+offset_right = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/ColorRect2/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+
+[node name="Button" type="Button" parent="Control/ColorRect2/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+action_mode = 0
+text = "Restart"
+
+[node name="Button2" type="Button" parent="Control/ColorRect2/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+action_mode = 0
+text = "Quit"
+
+[node name="Label" type="Label" parent="Control/ColorRect2"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.5
+offset_top = 125.0
+offset_right = 23.5
+offset_bottom = 151.0
+grow_horizontal = 2
+text = "Pause"
+
+[node name="Label2" type="Label" parent="Control/ColorRect2"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -193.0
+offset_top = -26.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "By Carter and PlantyMan"
+
 [connection signal="area_entered" from="Character/Area3D" to="Character" method="_on_area_3d_area_entered"]
+[connection signal="pressed" from="Control/ColorRect2/HBoxContainer/VBoxContainer/Button" to="Control" method="_on_button_pressed"]
+[connection signal="pressed" from="Control/ColorRect2/HBoxContainer/VBoxContainer/Button2" to="Control" method="_on_button_2_pressed"]
