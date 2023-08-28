@@ -1,13 +1,17 @@
 extends enemy_class
 
-@onready var player: CharacterBody3D =  $"../../Character"
-@onready var camera: Camera3D = $"../../Character/Head/Camera3D"
+@onready var player: CharacterBody3D =  $"../Character"
+@onready var camera: Camera3D = $"../Character/Head/Camera3D"
 @onready var alert_area: Area3D = $Interact_Radius
 @onready var debug_label = $"3D-Label/SubViewport/Label"
-
-#@onready var col: CollisionShape3D = $"../../CollisionShape3D"
+@onready var game_handler = $".."
 
 var model_lib = preload("res://resources/models/model-lib.tscn")
+var sfx_death = preload("res://resources/audio/sfx/EnemyTakeDamage.wav")
+var sfx_dmg = preload("res://resources/audio/sfx/EnemyTakeDamage.wav")
+var sfx_shoot = preload("res://resources/audio/sfx/sfx_eye_shot.wav")
+
+var bullet_prefab = preload("res://resources/prefabs/enemy_bullet.tscn")
 
 var height_offset = 0.0
 var model_lib_i
@@ -19,6 +23,7 @@ enum w_states {
 }
 var behavior_state: w_states = w_states.ARRIVED
 var jump_timer: Timer
+var shoot_timer: Timer
 
 func _ready():
 	model_lib_i = model_lib.instantiate()
@@ -33,11 +38,11 @@ func _ready():
 			my_col = model_lib_i.get_node("Ground-Col")
 			#set its conditions
 			alert_radius = 25.0
-			speed = 1.6
+			speed = 2.0
 			accel = 5.0
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
-			health = 2.0
+			health = 1.0
 			name = "Grounded"
 		
 		ENEMY_TYPE.FLYING:
@@ -51,7 +56,7 @@ func _ready():
 			accel = 5.0
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 1)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 0)
-			health = 3.0
+			health = 2.0
 			name = "Flying"
 			
 		ENEMY_TYPE.ALERT:
@@ -65,7 +70,7 @@ func _ready():
 			accel = 4.0
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
-			health = 4.0
+			health = 3.0
 			name = "Alert"
 	my_nav.path_height_offset = height_offset
 	var lib_root = my_model.get_parent()
@@ -88,7 +93,8 @@ func _physics_process(delta):
 			ENEMY_TYPE.ALERT:
 				behavior_slime(delta)
 	if behavior_state == w_states.ARRIVED:
-		my_nav.target_position = get_parent().rand_cell_pos()
+		if game_handler.current_floor:
+			my_nav.target_position = game_handler.current_floor.rand_cell_pos()
 		behavior_state = w_states.SEARCHING
 	if behavior_state == w_states.SEARCHING:
 		behavior_wander(delta)
@@ -114,10 +120,6 @@ func behavior_slime(delta):
 	my_nav.target_position = camera.global_position - camera.global_transform.basis.z * .3
 	var dir = (my_nav.get_next_path_position() - global_position).normalized()
 	velocity = velocity.lerp(dir * speed, accel * delta)
-
-func jump_timeout():
-	velocity += Vector3(0,8.5,0)
-	jump_timer = Globals.createTimer(randf_range(0.5,2.75), true, jump_timeout, true)
 	
 func behavior_bug(delta):
 	var target_dir = (player.position - self.global_transform.origin).normalized()
@@ -129,20 +131,41 @@ func behavior_bug(delta):
 	velocity = velocity.lerp(dir * speed, accel * delta)
 
 func behavior_eye(delta):
+	if shoot_timer == null:
+		shoot_timer = Globals.createTimer(0.1, true, shoot_timeout, true)
 	var target_dir = (player.position - self.global_transform.origin).normalized()
 	look_at(self.global_transform.origin + -target_dir, Vector3(0, 1, 0))
-	my_nav.target_position = camera.global_position - camera.global_transform.basis.z * 1.5
+	my_nav.target_position = camera.global_position - camera.global_transform.basis.z * 2.5
 	var dir: Vector3 = (my_nav.get_next_path_position() - global_position).normalized()	
 	velocity = velocity.lerp(dir * speed, accel * delta)
 
+func shoot_timeout():
+	var bullet_instance = bullet_prefab.instantiate()
+	add_sibling(bullet_instance)
+	bullet_instance.global_transform.origin = self.global_transform.origin
+	var rayspeed = 6.5
+	var ray_dir = (player.position - self.position)*2.0
+	var ray_goal = self.position + ray_dir
+	var ray_distance = ray_dir.length()
+	var ray_unit_dur = ray_distance / rayspeed
+	Globals.oneshot_sound(sfx_shoot, self.position, -25.0,randf_range(0.8,1.2))
+	Globals.stween_to(bullet_instance, "position", ray_goal, ray_unit_dur, Globals.null_call ,Tween.TRANS_LINEAR, Tween.EASE_IN, false, false)
+	shoot_timer = Globals.createTimer(randf_range(0.5,1.75), true, shoot_timeout, true)
+	
+func jump_timeout():
+	velocity += Vector3(0,8.5,0)
+	jump_timer = Globals.createTimer(randf_range(0.5,2.75), true, jump_timeout, true)
+	
 func is_destination_reached():
 	return my_nav.distance_to_target() < 10.0  # Adjust the threshold as needed
 	
 ###function called from raycast collision
 func hit(hit_dir):
-	velocity += hit_dir * 4.0
+	velocity += hit_dir * 8.0
 	health = health - 1.0
+	Globals.oneshot_sound(sfx_dmg, self.position, 1.0,randf_range(0.5,2.0))
 	if health == 0.0:
+		Globals.oneshot_sound(sfx_death, self.position, 0.0,1.0)
 		queue_free()
 
 #GODOT doc helper functions for disabling bitmasks

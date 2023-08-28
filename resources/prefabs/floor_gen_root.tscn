@@ -17,7 +17,7 @@ script = ExtResource("1_f5chb")
 [node name="Ground-Zone" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_meoi8")
 
-[node name="Ground-Gridmap" type="GridMap" parent="Ground-Zone"]
+[node name="Ground-Gridmap" type="GridMap" parent="Ground-Zone" groups=["Enviro"]]
 mesh_library = ExtResource("1_s6xfp")
 collision_mask = 7
 

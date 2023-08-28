@@ -10,14 +10,18 @@ extends Node
 @export var floor_size: int = 15
 var half_size
 
-@export var enemy_num:int = 12
+@export var enemy_max:int = 12
 @export var light_num:int = 12
+@export var ammo_num:int = 12
+var enemy_num
 
 @onready var new_floor = preload("res://resources/prefabs/floor_gen_root.tscn")
 @onready var enemy = preload("res://resources/prefabs/enemy.tscn")
 @onready var lantern = preload("res://resources/prefabs/lantern.tscn")
 @onready var goal = preload("res://resources/prefabs/goal.tscn")
+@onready var ammo_pickup = preload("res://resources/prefabs/ammo_pickup.tscn")
 
+@onready var sfx_newfloor = preload("res://resources/audio/sfx/sfx_next_floor.wav")
 var noise := FastNoiseLite.new()
 
 var weightedRange := [
@@ -33,10 +37,13 @@ var weightedRange := [
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	game_handler.change_current_floor(self)
 	for i in range(weightedRange.size()):
-		var random_weight = randi() # Generate a random number within the total weight
+		var random_weight = randi_range(0.0,weightedRange[i]["weight"]) # Generate a random number within the total weight
 		weightedRange[i]["weight"] = random_weight
-
+	
+	enemy_num = randi_range(0.0,enemy_max*2)
+	
 	half_size = floor_size/2
 	flight_mesh.mesh.size = Vector2(floor_size*2,floor_size*2)
 	flight_region.bake_navigation_mesh(true)
@@ -63,7 +70,7 @@ func populate():
 		# Check if the cell is empty
 		if gridmap.get_cell_item(cell_pos) == 0:
 			# The cell is empty, so spawn an enemy at this position
-			spawn_at_pos(enemy, cell_pos, Vector3(0,0,0))
+			spawn_at_pos(enemy, cell_pos, Vector3(0,0,0), true)
 	for i in range(light_num):
 		# Generate random positions within the bounds
 		var random_x = randi_range(-half_size, half_size)
@@ -72,29 +79,41 @@ func populate():
 		# Check if the cell is empty
 		if gridmap.get_cell_item(cell_pos) == 0:
 			# The cell is empty, so spawn an enemy at this position
-			spawn_at_pos(lantern, cell_pos, Vector3(0,1,0))
+			spawn_at_pos(lantern, cell_pos, Vector3(0,1,0), false)
+	for i in range(ammo_num):
+		# Generate random positions within the bounds
+		var random_x = randi_range(-half_size, half_size)
+		var random_z = randi_range(-half_size, half_size)
+		var cell_pos = Vector3i(random_x, 1, random_z)
+		# Check if the cell is empty
+		if gridmap.get_cell_item(cell_pos) == 0:
+			# The cell is empty, so spawn an enemy at this position
+			spawn_at_pos(ammo_pickup, cell_pos, Vector3(0,1,0), true)
 	var random_x = randi_range(-half_size+3, half_size-3)
 	var random_z = randi_range(-half_size+3, half_size-3)
 	var cell_pos = Vector3i(random_x, 1, random_z)
-	var goal_inst = spawn_at_pos(goal, cell_pos, Vector3(0,1,0))
+	var goal_inst = spawn_at_pos(goal, cell_pos, Vector3(0,1,0), false)
 	var goal_area = goal_inst.get_child(0)
 	goal_area.connect("body_entered",_on_goal_area_body_entered)
 
 func _on_goal_area_body_entered(body):
-	print("GOAL")
+	Globals.oneshot_sound(sfx_newfloor, body.position, 1.0,1.0)
 	var new_floor_instance = new_floor.instantiate()
 	new_floor_instance.global_transform.origin = self.position - Vector3(0,10,0)
 	add_sibling(new_floor_instance)
-	Globals.stween_to(new_floor_instance, "position", self.position, 2.0, Tween.TRANS_LINEAR, Tween.EASE_OUT_IN, false, false)
+	Globals.stween_to(new_floor_instance, "position", self.position, 2.0, Globals.null_call,Tween.TRANS_LINEAR, Tween.EASE_OUT_IN, false, false)
 	queue_free()
 
-func spawn_at_pos(prefab : PackedScene, pos : Vector3, offset : Vector3) -> Node:
+func spawn_at_pos(prefab : PackedScene, pos : Vector3, offset : Vector3, is_sibling: bool) -> Node:
 	# Create and place an enemy at the specified position
 	var instance = prefab.instantiate()
 	instance.global_transform.origin = gridmap.map_to_local(pos) + offset
 	if instance is enemy_class:
 		instance.my_type = randi_range(0,2)
-	add_child(instance)
+	if is_sibling:
+		add_sibling(instance)
+	else: add_child(instance)
+#	instance.global_transform.origin = gridmap.map_to_local(pos) + offset
 	return instance
 
 func delete_rand_cell():

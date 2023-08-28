@@ -2,10 +2,10 @@ extends Node
 
 #TWEEN UTILS-------------------------------------------------------
 
-func stween_to(node: Node, property: String, target: Variant, duration: float, _trans: Tween.TransitionType, _ease: Tween.EaseType, relative: bool, parallel: bool):
+func stween_to(node: Node, property: String, target: Variant, duration: float, method: Callable,_trans: Tween.TransitionType, _ease: Tween.EaseType, relative: bool, parallel: bool):
 	var tween = node.create_tween()
 	tween.set_parallel(parallel)
-#	print("call")
+	tween.connect("finished", method)
 	if relative:
 #		print("relative")
 		tween.tween_property(node, property, target, duration).set_trans(_trans).set_ease(_ease).as_relative()
@@ -42,27 +42,25 @@ func get_child_by_type(node: Node, type_name: String) -> Node:
 
 #ONE SHOTS-------------------------------------------------------
 
-func oneshot_sound(sfx: AudioStream, position: Vector3, volume: float = 1.0):
+func oneshot_sound(sfx: AudioStream, position: Vector3, volume: float = 1.0, pitch_scale: float = 1.0):
 	var audioPlayer = AudioStreamPlayer3D.new()
+	audioPlayer.pitch_scale = pitch_scale 
 	audioPlayer.stream = sfx
 	audioPlayer.transform.origin = position
 	audioPlayer.volume_db = volume # Convert volume to dB
-	audioPlayer.connect("finished", _on_audio_player_finished)
+	audioPlayer.finished.connect(free_node.bind(audioPlayer))
 	get_tree().get_root().add_child(audioPlayer)
 	audioPlayer.play()
 
-func _on_audio_player_finished(audioPlayer):
-	audioPlayer.queue_free()
+func free_node(free: Node):
+	free.queue_free()
 
 func oneshot_part(particleSystem: PackedScene, position: Vector3):
 	var instance = particleSystem.instantiate()
 	instance.transform.origin = position
-	instance.connect("finished", _on_particle_system_finished)
+	createTimer(2.0, true, free_node.bind(instance), true)
 	get_parent().add_child(instance)
 	instance.restart()
-
-func _on_particle_system_finished(instance):
-	instance.queue_free()
 
 #MATH UTILS-------------------------------------------------------
 func vec2_vec3(vec3, axis):
@@ -166,4 +164,8 @@ func random_tint(_sprite: Sprite2D):
 	var blue = randf_range(0, 1)
 	# Set the random color as the sprite's modulate color
 	_sprite.modulate = Color(red, green, blue)
+	return
+
+#RANDOM-------------------------------------------------------
+func null_call():
 	return

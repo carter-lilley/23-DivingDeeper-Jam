@@ -2,7 +2,6 @@ extends Node3D
 
 var despawn_timer
 var despawn_time: float = 2.0
-#var lamp_brightness: float = 
 @onready var light: Light3D = $Bullet_Lamp
 @onready var bullet_mesh = $Bullet_Mesh
 

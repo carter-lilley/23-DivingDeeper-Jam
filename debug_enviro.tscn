@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=25 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://resources/scripts/game_handler.gd" id="1_8nix5"]
 [ext_resource type="Environment" uid="uid://cgrhk3h82eam2" path="res://debug_enviro-worldsettings.tres" id="1_34rio"]
@@ -12,6 +12,8 @@
 [ext_resource type="Script" path="res://resources/scripts/UI_Controller.gd" id="10_2r4mu"]
 [ext_resource type="Texture2D" uid="uid://c7o7eujlrm2o2" path="res://resources/models/textures/crosshair.png" id="10_7kg24"]
 [ext_resource type="AudioStream" uid="uid://brwkr2u5yfhsq" path="res://resources/audio/music/Sketch1_08-25-23.mp3" id="12_fheo1"]
+[ext_resource type="Texture2D" uid="uid://l2v67w4i2d8x" path="res://resources/models/textures/bullet_icon.png" id="13_pxol8"]
+[ext_resource type="Texture2D" uid="uid://pnolnikhrqa5" path="res://resources/models/textures/layer_icon.png" id="14_vg2ki"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
@@ -71,6 +73,11 @@ size = Vector3(0.587979, 1.1887, 0.587214)
 
 [sub_resource type="LabelSettings" id="LabelSettings_gb0ad"]
 font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_r8dvs"]
+font_size = 48
+shadow_color = Color(0, 0, 0, 0.627451)
+shadow_offset = Vector2(5.87, 4.305)
 
 [node name="World_Root" type="Node3D"]
 script = ExtResource("1_8nix5")
@@ -261,6 +268,67 @@ grow_horizontal = 2
 layout_mode = 2
 text = "TIME"
 label_settings = SubResource("LabelSettings_gb0ad")
+
+[node name="Ammo-Widget" type="Control" parent="Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Ammo-TextRect" type="TextureRect" parent="Control/Ammo-Widget"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = -128.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("13_pxol8")
+
+[node name="Ammo-Label" type="Label" parent="Control/Ammo-Widget"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -138.0
+offset_top = -70.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "15"
+label_settings = SubResource("LabelSettings_r8dvs")
+
+[node name="Floor-Widget" type="Control" parent="Control"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Floor-TextRect" type="TextureRect" parent="Control/Floor-Widget"]
+layout_mode = 1
+offset_right = 128.0
+offset_bottom = 128.0
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("14_vg2ki")
+
+[node name="Floor-Label" type="Label" parent="Control/Floor-Widget"]
+layout_mode = 1
+offset_right = 126.0
+offset_bottom = 70.0
+text = "01
+"
+label_settings = SubResource("LabelSettings_r8dvs")
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [connection signal="body_entered" from="Character/Hitbox" to="Character" method="_on_hitbox_body_entered"]
 [connection signal="pressed" from="Control/UI-Menu-Rect/HBoxContainer/VBoxContainer/UI-Restart-Btn" to="." method="_on_ui_restart_btn_pressed"]

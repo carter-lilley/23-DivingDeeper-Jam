@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cvpgvwch0qwpp"]
+
+[ext_resource type="Script" path="res://resources/prefabs/ammo_pickup.gd" id="1_elb1v"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_qb64k"]
+top_radius = 0.2
+bottom_radius = 0.2
+height = 0.7
+radial_segments = 7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_034tu"]
+emission_enabled = true
+emission = Color(1, 0.0431373, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j7rob"]
+size = Vector3(0.41915, 0.753631, 0.415374)
+
+[node name="Ammo_Pickup" type="MeshInstance3D"]
+mesh = SubResource("CylinderMesh_qb64k")
+surface_material_override/0 = SubResource("StandardMaterial3D_034tu")
+script = ExtResource("1_elb1v")
+float_height = 0.4
+
+[node name="Pickup_Area" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 2
+
+[node name="Picku_Area_Col_Shape" type="CollisionShape3D" parent="Pickup_Area"]
+shape = SubResource("BoxShape3D_j7rob")
+
+[connection signal="body_entered" from="Pickup_Area" to="." method="_on_pickup_area_body_entered"]

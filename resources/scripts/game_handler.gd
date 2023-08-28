@@ -4,6 +4,7 @@ extends Node3D
 @onready var player = $Character
 @onready var floor_gen = preload("res://resources/prefabs/floor_gen_root.tscn")
 @onready var sfx_player_death = preload("res://resources/audio/sfx/PlayerDeath.wav")
+var current_floor: Node3D
 
 enum gstates {
 	PLAYING,
@@ -14,15 +15,16 @@ var game_state: gstates = gstates.PLAYING
 
 var game_time
 var floor_instance 
-
+var floor_num: int = 0
 # Called when the node enters the scene tree for the first time.
 
 func _ready():
+#	current_floor = get_node("floor_gen_root")
 	game_time = Globals.createTimer(180.0, true, game_over, true)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	start_floor(game_time.time_left)
 
-func _process(delta):
+func _process(_delta):
 	if Input.is_action_just_pressed("pause"):
 		match game_state:
 			gstates.PLAYING:
@@ -43,6 +45,10 @@ func start_floor(curr_time : float):
 
 func delete_cell():
 	floor_instance.delete_rand_cell()
+
+func change_current_floor(new_floor:Node3D):
+	floor_num+=1
+	current_floor = new_floor
 
 func game_over():
 	Globals.oneshot_sound(sfx_player_death, player.position, -12.0)
