@@ -90,6 +90,21 @@ func normalize_rot_deg(rot_deg: float) -> float:
 	rot_deg += full_rotations * 360.0
 	return (rot_deg)
 
+func normalize_rot_rad(rot_rad: float) -> float:
+	# Calculate the full rotations (in multiples of 2π radians)
+	var full_rotations = int(rot_rad / (2 * PI))
+	
+	# Normalize the Y-axis to -π to π radians
+	rot_rad = fmod(rot_rad, 2 * PI)
+	if rot_rad < -PI:
+		rot_rad += 2 * PI
+	elif rot_rad > PI:
+		rot_rad -= 2 * PI
+	
+	# Add back the full rotations
+	rot_rad += full_rotations * 2 * PI
+	return rot_rad
+
 func ShortestRot(q1:Quaternion,q2:Quaternion) -> Quaternion:
 	if q1.dot(q2) < 0:
 		return q1 * QuatMultiply(q2,-1).inverse()

@@ -33,6 +33,10 @@ var weightedRange := [
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	for i in range(weightedRange.size()):
+		var random_weight = randi() # Generate a random number within the total weight
+		weightedRange[i]["weight"] = random_weight
+
 	half_size = floor_size/2
 	flight_mesh.mesh.size = Vector2(floor_size*2,floor_size*2)
 	flight_region.bake_navigation_mesh(true)
@@ -69,8 +73,8 @@ func populate():
 		if gridmap.get_cell_item(cell_pos) == 0:
 			# The cell is empty, so spawn an enemy at this position
 			spawn_at_pos(lantern, cell_pos, Vector3(0,1,0))
-	var random_x = randi_range(-half_size-1, half_size-1)
-	var random_z = randi_range(-half_size-1, half_size-1)
+	var random_x = randi_range(-half_size+3, half_size-3)
+	var random_z = randi_range(-half_size+3, half_size-3)
 	var cell_pos = Vector3i(random_x, 1, random_z)
 	var goal_inst = spawn_at_pos(goal, cell_pos, Vector3(0,1,0))
 	var goal_area = goal_inst.get_child(0)
@@ -98,6 +102,12 @@ func delete_rand_cell():
 	var random_z = randi_range(-half_size, half_size)
 	var cell_pos = Vector3i(random_x, 1, random_z)
 	gridmap.set_cell_item(cell_pos, -1)  # -1 represents an empty cell.
+
+func rand_cell_pos() -> Vector3:
+	var random_x = randi_range(-half_size, half_size)
+	var random_z = randi_range(-half_size, half_size)
+	var cell_pos = Vector3i(random_x, 1, random_z)
+	return gridmap.map_to_local(cell_pos)
 
 func randomBasis():
 	# Generate a random rotation in increments of 90 degrees on the Y-axis
