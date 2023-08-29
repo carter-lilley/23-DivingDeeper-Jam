@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=26 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://resources/scripts/game_handler.gd" id="1_8nix5"]
 [ext_resource type="Environment" uid="uid://cgrhk3h82eam2" path="res://debug_enviro-worldsettings.tres" id="1_34rio"]
@@ -14,6 +14,10 @@
 [ext_resource type="AudioStream" uid="uid://brwkr2u5yfhsq" path="res://resources/audio/music/Sketch1_08-25-23.mp3" id="12_fheo1"]
 [ext_resource type="Texture2D" uid="uid://l2v67w4i2d8x" path="res://resources/models/textures/bullet_icon.png" id="13_pxol8"]
 [ext_resource type="Texture2D" uid="uid://pnolnikhrqa5" path="res://resources/models/textures/layer_icon.png" id="14_vg2ki"]
+
+[sub_resource type="Curve" id="Curve_wq0my"]
+_data = [Vector2(0, 0), 0.0, 0.141206, 0, 0, Vector2(0.76, 1), 2.08059, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]
 radius = 0.307044
@@ -109,6 +113,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("2_788qd")
+cam_stick_curve = SubResource("Curve_wq0my")
+MOUSE_SENS = 0.15
+STICK_H_SENS = 200.0
+STICK_V_SENS = 100.0
+CAM_ACCEL = 70
 BOB_AMP = 0.03
 metadata/_edit_group_ = true
 
@@ -224,11 +233,13 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+focus_neighbor_bottom = NodePath("../UI-Quit-Btn")
 action_mode = 0
 text = "Restart"
 
 [node name="UI-Quit-Btn" type="Button" parent="Control/UI-Menu-Rect/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("../UI-Restart-Btn")
 action_mode = 0
 text = "Quit"
 

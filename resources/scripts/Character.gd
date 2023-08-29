@@ -1,12 +1,14 @@
 extends player_class
 
+@export var cam_stick_curve: Curve
+# internal variables to track camera rotation and position
+var tar_rot: Vector3 = Vector3.ZERO
+
 var alive: bool = true
-var speed 
+var curr_speed: float = 0.0 
 var space_state
 var step_timer
 var ammo: int = 50.0
-# Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 #Referencing variables for head/camera, node objects have to be saved in onready variables
 @onready var game_handler = $".."
@@ -31,7 +33,8 @@ func _ready():
 #	step_timer = Globals.createTimer(randf_range(0.1,0.3), true, step_sound, true)
 	
 func _process(_delta):
-	if self.position.y < -20 and alive:	
+	var floor = game_handler.curr_stage_height - game_handler.stage_offset
+	if self.position.y < floor and alive:	
 		alive = false
 		game_handler.game_over()
 	if CURRENT_HEALTH <= 0 and alive:
@@ -39,8 +42,9 @@ func _process(_delta):
 		game_handler.game_over()
 
 func _physics_process(delta):
+	
 	if not is_on_floor():
-		velocity.y -= gravity * delta
+		velocity.y -= game_handler.gravity * delta
 		if Input.is_action_just_pressed("shoot_button") and ammo > 0.0:
 			var ray_dir: Vector3 = +camera.global_transform.basis.z
 			velocity += ray_dir*5.0
@@ -79,7 +83,7 @@ func _physics_process(delta):
 				Globals.stween_to(bullet_instance, "position", ray_dir*ray_distance, ray_unit_dur,Globals.null_call,Tween.TRANS_CIRC, Tween.EASE_OUT, true, false)
 			
 		if Input.is_action_pressed("crouch_button"):
-			speed = CROUCH_SPEED
+			curr_speed = CROUCH_SPEED
 			var new_head_height: Vector3 = Vector3(0,HEAD_HEIGHT/2,0)
 			head.position = head.position.lerp(new_head_height, delta * 5.0)
 			col.shape.height = lerp(col.shape.height,COLLISION_HEIGHT/2,delta * 5.0)
@@ -88,9 +92,9 @@ func _physics_process(delta):
 			head.position = head.position.lerp(new_head_height, delta * 5.0)
 			col.shape.height = lerp(col.shape.height,COLLISION_HEIGHT,delta * 5.0)
 			if Input.is_action_pressed("sprint_button"):
-				speed = SPRINT_SPEED
+				curr_speed = SPRINT_SPEED
 			else:
-				speed = WALK_SPEED
+				curr_speed = WALK_SPEED
 
 		#handle movement
 		# Get the input direction and handle the movement/deceleration.
@@ -100,14 +104,14 @@ func _physics_process(delta):
 		if is_on_floor():
 			#If the direction input is NOT zero, we multiply our x and z velocity (left right, forward back respectively) by the speed variable
 			if direction:
-				velocity.x = direction.x * speed
-				velocity.z = direction.z * speed
+				velocity.x = direction.x * curr_speed
+				velocity.z = direction.z * curr_speed
 			else:
-				velocity.x = lerp(velocity.x, direction.x * speed, delta * 7.0)
-				velocity.z = lerp(velocity.z, direction.z * speed, delta * 7.0)
+				velocity.x = lerp(velocity.x, direction.x * curr_speed, delta * 7.0)
+				velocity.z = lerp(velocity.z, direction.z * curr_speed, delta * 7.0)
 		else:
-			velocity.x = lerp(velocity.x, direction.x * speed, delta * 3.0)
-			velocity.z = lerp(velocity.z, direction.z * speed, delta * 3.0)
+			velocity.x = lerp(velocity.x, direction.x * curr_speed, delta * 3.0)
+			velocity.z = lerp(velocity.z, direction.z * curr_speed, delta * 3.0)
 
 		# Head Bob functionality
 		t_bob += delta * velocity.length() * float(is_on_floor()) #is_on_floor() converted to a float is 1 or 0, IE, yes or no as to whether youre on the floor or not 
@@ -119,27 +123,40 @@ func _physics_process(delta):
 		camera.fov = lerp(camera.fov, target_fov, delta * 8.0)
 	else: velocity = velocity.lerp(Vector3(0,0,0),delta*12.0)
 	move_and_slide()
+	
 
-# Handle rotation of the mouse (looking around
+	var cam_input = Globals.get_stick("cam_left", "cam_right", "cam_up", "cam_down")
+	cam_input = Globals.response_curve(cam_input,cam_stick_curve)
+	if cam_input:
+		var remap_vec : Vector2 = Vector2(cam_input.y,cam_input.x)
+		var cam_vec : Vector3 = Globals.vec3_vec2(remap_vec, 2, 0)
+		tar_rot.y -= cam_vec.y*STICK_H_SENS*delta
+		tar_rot.x -= cam_vec.x*STICK_V_SENS*delta
+
+	tar_rot.x = clamp(tar_rot.x, -90, 90)
+	tar_rot.y = Globals.normalize_rot_deg(tar_rot.y)
+	
+	head.rotation.y = lerp_angle(head.rotation.y, deg_to_rad(tar_rot.y), delta * CAM_ACCEL)
+	camera.rotation.x = lerp_angle(camera.rotation.x, deg_to_rad(tar_rot.x), delta * CAM_ACCEL)
+	
+# Handle rotation of the mouse
 func _unhandled_input(event):
 	if game_handler.game_state == game_handler.gstates.PLAYING:
 		if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			head.rotate_y(-event.relative.x * MOUSE_SENS) #rotate up and down (thru the XZ plane)
-			camera.rotate_x(-event.relative.y * MOUSE_SENS) #rotate left and right (thru the YZ plane)
-			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-40), deg_to_rad(60)) #Slowdown rotation
+			var remap_vec : Vector2 = Vector2(event.relative.y,event.relative.x)
+			var cam_vec : Vector3 = Globals.vec3_vec2(remap_vec, 2, 0)
+			tar_rot -= cam_vec * MOUSE_SENS
 
 #func step_sound():
 #	Globals.oneshot_sound(sfx_player_step, self.position, 310.0, randf_range(0.5,2.0))
 #	step_timer = Globals.createTimer(randf_range(0.1,0.3), true, step_sound, true)
-	
+
 func _headbob(time) -> Vector3:
 	var pos = Vector3.ZERO
 	pos.y = sin(time * BOB_FREQ) * BOB_AMP
 	pos.x = cos(time * BOB_FREQ / 2) * BOB_AMP
-	
 #	if pos.y <= -BOB_AMP+.005 and is_on_floor():
 #		Globals.oneshot_sound(sfx_player_step, self.position, -20.0)
-		
 	return pos
 
 # Function to shake the camera.

@@ -83,6 +83,8 @@ func _ready():
 	alert_area.get_child(0).shape = new_col_shape
 
 func _physics_process(delta):
+	if not is_on_floor() and my_type != ENEMY_TYPE.FLYING:
+		velocity.y -= game_handler.gravity * delta
 	debug_label.text = str(behavior_state)
 	if behavior_state == w_states.ALERT:
 		match my_type:

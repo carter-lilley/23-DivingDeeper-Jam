@@ -7,6 +7,8 @@ extends Control
 @onready var player = $"../Character"
 @onready var floor_label = $"Floor-Widget/Floor-Label"
 @onready var ammo_label = $"Ammo-Widget/Ammo-Label"
+@onready var restart_btn = $"UI-Menu-Rect/HBoxContainer/VBoxContainer/UI-Restart-Btn"
+@onready var quit_btn = $"UI-Menu-Rect/HBoxContainer/VBoxContainer/UI-Quit-Btn"
 var isPaused = false
 
 func _process(_delta):
@@ -27,6 +29,7 @@ func _process(_delta):
 
 func pause():
 	ui_menu.visible = true
+	restart_btn.grab_focus()
 
 func unpause():
 	ui_menu.visible = false

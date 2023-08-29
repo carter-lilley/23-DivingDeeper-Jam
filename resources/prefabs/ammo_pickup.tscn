@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvpgvwch0qwpp"]
+[gd_scene load_steps=11 format=3 uid="uid://cvpgvwch0qwpp"]
 
 [ext_resource type="Script" path="res://resources/prefabs/ammo_pickup.gd" id="1_elb1v"]
+[ext_resource type="Texture2D" uid="uid://xdhng53iih48" path="res://resources/models/textures/sparkle.png" id="2_uxxnf"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_qb64k"]
 top_radius = 0.2
@@ -15,6 +16,45 @@ emission = Color(1, 0.0431373, 0, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_j7rob"]
 size = Vector3(0.41915, 0.753631, 0.415374)
 
+[sub_resource type="Gradient" id="Gradient_4joe2"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xs3nx"]
+gradient = SubResource("Gradient_4joe2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sx5df"]
+lifetime_randomness = 0.5
+emission_shape = 3
+emission_box_extents = Vector3(0.3, 0.3, 0.3)
+direction = Vector3(0, -1, 0)
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+radial_accel_min = 1.0
+radial_accel_max = 2.0
+damping_min = 3.0
+damping_max = 6.0
+scale_min = 0.0
+scale_max = 4.0
+color_ramp = SubResource("GradientTexture1D_xs3nx")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_god0t"]
+transparency = 3
+alpha_hash_scale = 1.0
+alpha_antialiasing_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("2_uxxnf")
+emission_enabled = true
+emission = Color(1, 0.768627, 0, 1)
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_6g8mc"]
+material = SubResource("StandardMaterial3D_god0t")
+size = Vector2(0.2, 0.2)
+
 [node name="Ammo_Pickup" type="MeshInstance3D"]
 mesh = SubResource("CylinderMesh_qb64k")
 surface_material_override/0 = SubResource("StandardMaterial3D_034tu")
@@ -27,5 +67,16 @@ collision_mask = 2
 
 [node name="Picku_Area_Col_Shape" type="CollisionShape3D" parent="Pickup_Area"]
 shape = SubResource("BoxShape3D_j7rob")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0453903, 0)
+amount = 9
+lifetime = 2.0
+speed_scale = 0.75
+randomness = 1.0
+fixed_fps = 60
+visibility_aabb = AABB(-0.365898, -0.363337, -0.360431, 0.731796, 1.23058, 0.720862)
+process_material = SubResource("ParticleProcessMaterial_sx5df")
+draw_pass_1 = SubResource("QuadMesh_6g8mc")
 
 [connection signal="body_entered" from="Pickup_Area" to="." method="_on_pickup_area_body_entered"]

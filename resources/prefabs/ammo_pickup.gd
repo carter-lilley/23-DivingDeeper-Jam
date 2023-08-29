@@ -8,6 +8,9 @@ var sfx_pickup = preload("res://resources/audio/sfx/sfx_pickup.wav")
 var tween: Tween
 var tween_direction: int = 1  # 1 for up, -1 for down
 
+func _process(delta):
+	self.rotation.y += delta * 2.0
+
 func _ready():
 	Globals.stween_to(self, "position", Vector3(0, float_height * tween_direction, 0),float_speed, flip_dir, Tween.TRANS_SINE, Tween.EASE_IN_OUT, true, false)
 

@@ -3,7 +3,8 @@ class_name player_class
 
 # Cam variables
 @export var MOUSE_SENS = 0.005
-@export var STICK_SENS = 75.0
+@export var STICK_H_SENS = 75.0
+@export var STICK_V_SENS = 75.0
 @export var CAM_ACCEL = 5
 @export var BASE_FOV: float = 75.0 
 @export var FOV_CHANGE: float = 1.5
