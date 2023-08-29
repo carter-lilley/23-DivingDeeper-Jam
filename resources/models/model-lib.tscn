@@ -5,14 +5,19 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_5b77k"]
 radius = 0.697189
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_fsewc"]
-size = Vector3(1.35, 0.5, 1.2)
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ymfu6"]
+height = 0.436456
+radius = 0.431982
 
 [node name="models" instance=ExtResource("1_xpdtm")]
 
+[node name="Eye-Main" parent="." index="3"]
+visible = false
+
 [node name="Flying-Col" type="CollisionShape3D" parent="." index="4"]
+visible = false
 shape = SubResource("SphereShape3D_5b77k")
 
 [node name="Ground-Col" type="CollisionShape3D" parent="." index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.266034, 0.0358123)
-shape = SubResource("BoxShape3D_fsewc")
+transform = Transform3D(0.999974, 0.00726051, 0, -0.00726051, 0.999974, 0, 0, 0, 1, 0, 0.186181, 0.0358123)
+shape = SubResource("CylinderShape3D_ymfu6")

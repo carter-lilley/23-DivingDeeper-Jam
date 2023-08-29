@@ -1,18 +1,20 @@
 [gd_scene load_steps=6 format=3 uid="uid://cfg36gpiq8umv"]
 
-[ext_resource type="Script" path="res://resources/scripts/GridMap-Gen.gd" id="1_f5chb"]
+[ext_resource type="Script" path="res://resources/scripts/levelgen_main.gd" id="1_i7qes"]
 [ext_resource type="MeshLibrary" uid="uid://bqrjr7puhd5dv" path="res://resources/models/tilemap_meshlib.tres" id="1_s6xfp"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_meoi8"]
 agent_height = 0.5
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_hn0uj"]
+cell_height = 0.7
+agent_max_climb = 0.7
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fjk1n"]
 size = Vector2(0, 0)
 
 [node name="Floor_Gen_Root" type="Node3D"]
-script = ExtResource("1_f5chb")
+script = ExtResource("1_i7qes")
 
 [node name="Ground-Zone" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_meoi8")

@@ -10,6 +10,9 @@ var stage_offset = 15.0
 @onready var sfx_player_death = preload("res://resources/audio/sfx/PlayerDeath.wav")
 @onready var restart_btn = $"Control/UI-Menu-Rect/HBoxContainer/VBoxContainer/UI-Restart-Btn"
 
+@export var curr_floor_size: int = 12
+@export var curr_enemy_max:int = 6
+
 var current_floor: Node3D
 
 enum gstates {
@@ -26,7 +29,7 @@ var floor_num: int = 0
 
 func _ready():
 #	current_floor = get_node("floor_gen_root")
-	game_time = Globals.createTimer(180.0, true, game_over, true)
+	game_time = Globals.createTimer(60.0, true, game_over, true)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	start_floor(game_time.time_left)
 

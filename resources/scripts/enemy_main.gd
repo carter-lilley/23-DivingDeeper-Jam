@@ -24,6 +24,7 @@ enum w_states {
 var behavior_state: w_states = w_states.ARRIVED
 var jump_timer: Timer
 var shoot_timer: Timer
+var max_path_dist
 
 func _ready():
 	model_lib_i = model_lib.instantiate()
@@ -32,20 +33,22 @@ func _ready():
 	var my_col
 	match my_type:
 		ENEMY_TYPE.GROUNDED:
+			max_path_dist = 25.0
 			height_offset = 1.2
 			#create enemy model
 			my_model = model_lib_i.get_node("Bug")
 			my_col = model_lib_i.get_node("Ground-Col")
 			#set its conditions
-			alert_radius = 25.0
-			speed = 2.0
-			accel = 5.0
+			alert_radius = 100.0
+			speed = 2.2
+			accel = 25.0
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
 			health = 1.0
 			name = "Grounded"
 		
 		ENEMY_TYPE.FLYING:
+			max_path_dist = 7.0
 			height_offset = 0.0
 			#create enemy model
 			my_model = model_lib_i.get_node("Eye-Main")
@@ -56,22 +59,24 @@ func _ready():
 			accel = 5.0
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 1)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 0)
-			health = 2.0
+			health = 3.0
 			name = "Flying"
 			
 		ENEMY_TYPE.ALERT:
+			max_path_dist = 5.0
 			height_offset = 1.2
 			#create enemy model
 			my_model = model_lib_i.get_node("Slime")
 			my_col = model_lib_i.get_node("Ground-Col")
 			#set its conditions
-			alert_radius = 5.6
-			speed = 5.0
-			accel = 4.0
+			alert_radius = 4.6
+			speed = 6.0
+			accel = 1.0
 			my_nav.navigation_layers = enable_bitmask_inx(my_nav.navigation_layers, 0)
 			my_nav.navigation_layers = disable_bitmask_inx(my_nav.navigation_layers, 1)
-			health = 3.0
+			health = 2.0
 			name = "Alert"
+	my_nav.path_max_distance = max_path_dist
 	my_nav.path_height_offset = height_offset
 	var lib_root = my_model.get_parent()
 	lib_root.remove_child(my_model)
@@ -114,7 +119,7 @@ func behavior_wander(delta):
 
 func behavior_slime(delta):
 	if jump_timer == null:
-		jump_timer = Globals.createTimer(randf_range(0.5,2.75), true, jump_timeout, true)
+		jump_timer = Globals.createTimer(randf_range(0.5,1.75), true, jump_timeout, true)
 	var target_dir = (player.position - self.global_transform.origin).normalized()
 	look_at(self.global_transform.origin + -target_dir, Vector3(0, 1, 0))
 	self.rotation.x = 0.0
@@ -128,7 +133,7 @@ func behavior_bug(delta):
 	look_at(self.global_transform.origin + -target_dir, Vector3(0, 1, 0))
 	self.rotation.x = 0.0
 	self.rotation.z = 0.0
-	my_nav.target_position = camera.global_position - camera.global_transform.basis.z * -1
+	my_nav.target_position = camera.global_position - camera.global_transform.basis.z * -.1
 	var dir: Vector3 = (my_nav.get_next_path_position() - global_position).normalized()
 	velocity = velocity.lerp(dir * speed, accel * delta)
 
@@ -155,12 +160,18 @@ func shoot_timeout():
 	shoot_timer = Globals.createTimer(randf_range(0.5,1.75), true, shoot_timeout, true)
 	
 func jump_timeout():
-	velocity += Vector3(0,8.5,0)
-	jump_timer = Globals.createTimer(randf_range(0.5,2.75), true, jump_timeout, true)
+	if is_on_floor():
+		var target_dir = (player.position - self.global_transform.origin).normalized()
+		var jump_strength = randf_range(12,24.0)
+		velocity += Vector3(target_dir.x*jump_strength/4,jump_strength,target_dir.z*jump_strength/4)
+	jump_timer = Globals.createTimer(randf_range(0.5,1.75), true, jump_timeout, true)
 	
 func is_destination_reached():
-	return my_nav.distance_to_target() < 10.0  # Adjust the threshold as needed
-	
+	return my_nav.distance_to_target() < 5.0  # Adjust the threshold as needed
+		
+func alert():
+	behavior_state = w_states.ALERT
+
 ###function called from raycast collision
 func hit(hit_dir):
 	velocity += hit_dir * 8.0

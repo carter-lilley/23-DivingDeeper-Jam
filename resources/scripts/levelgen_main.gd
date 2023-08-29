@@ -7,19 +7,17 @@ extends Node
 @onready var nav_region : NavigationRegion3D = $"Ground-Zone"
 @onready var flight_region : NavigationRegion3D = $"Flight-Zone"
 
-@export var floor_size: int = 15
 var half_size
 
-@export var enemy_max:int = 12
-@export var light_num:int = 12
 @export var ammo_num:int = 12
 var enemy_num
+var light_num
 
 @onready var new_floor = preload("res://resources/prefabs/floor_gen_root.tscn")
 @onready var enemy = preload("res://resources/prefabs/enemy.tscn")
 @onready var lantern = preload("res://resources/prefabs/lantern.tscn")
 @onready var goal = preload("res://resources/prefabs/goal.tscn")
-@onready var ammo_pickup = preload("res://resources/prefabs/ammo_pickup.tscn")
+@onready var ammo_pickup = preload("res://resources/prefabs/item_pickup.tscn")
 
 @onready var sfx_newfloor = preload("res://resources/audio/sfx/sfx_next_floor.wav")
 var noise := FastNoiseLite.new()
@@ -42,10 +40,11 @@ func _ready():
 		var random_weight = randi_range(0.0,weightedRange[i]["weight"]) # Generate a random number within the total weight
 		weightedRange[i]["weight"] = random_weight
 	
-	enemy_num = randi_range(0.0,enemy_max*2)
+	enemy_num = randi_range(game_handler.curr_enemy_max/3,game_handler.curr_enemy_max)
+	light_num = randi_range(0.0,game_handler.curr_floor_size*2)
 	
-	half_size = floor_size/2
-	flight_mesh.mesh.size = Vector2(floor_size*2,floor_size*2)
+	half_size = game_handler.curr_floor_size/2
+	flight_mesh.mesh.size = Vector2(game_handler.curr_floor_size*2,game_handler.curr_floor_size*2)
 	flight_region.bake_navigation_mesh(true)
 	
 	noise.noise_type = 0
@@ -97,11 +96,23 @@ func populate():
 	goal_area.connect("body_entered",_on_goal_area_body_entered)
 
 func _on_goal_area_body_entered(body):
+	
 	Globals.oneshot_sound(sfx_newfloor, body.position, 1.0,1.0)
+	
+	var group_nodes = get_tree().get_nodes_in_group("Enemy")
+	for node in group_nodes:
+		node.alert()  # Alert all the old enemies
+	
+	game_handler.curr_floor_size+=.5
+	game_handler.curr_enemy_max+=2.5
+	
 	var new_floor_instance = new_floor.instantiate()
 	new_floor_instance.global_transform.origin = self.position - Vector3(0,10,0)
 	add_sibling(new_floor_instance)
-	Globals.stween_to(new_floor_instance, "position", self.position, 2.0, Globals.null_call,Tween.TRANS_LINEAR, Tween.EASE_OUT_IN, false, false)
+	Globals.stween_to(new_floor_instance, "position", self.position, 1.0, Globals.null_call,Tween.TRANS_EXPO, Tween.EASE_OUT, false, false)
+	
+	var new_time = game_handler.game_time.time_left + 25.0
+	game_handler.game_time.start(new_time)
 	queue_free()
 
 func spawn_at_pos(prefab : PackedScene, pos : Vector3, offset : Vector3, is_sibling: bool) -> Node:
