@@ -1,17 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://cvpgvwch0qwpp"]
+[gd_scene load_steps=9 format=3 uid="uid://cvpgvwch0qwpp"]
 
-[ext_resource type="Script" path="res://resources/scripts/ammo_pickup.gd" id="1_ip6u6"]
+[ext_resource type="Script" path="res://resources/scripts/item_pickup.gd" id="1_i4wt0"]
 [ext_resource type="Texture2D" uid="uid://xdhng53iih48" path="res://resources/models/textures/sparkle.png" id="2_wfhcs"]
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_qb64k"]
-top_radius = 0.2
-bottom_radius = 0.2
-height = 0.7
-radial_segments = 7
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_034tu"]
-emission_enabled = true
-emission = Color(1, 0.0431373, 0, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_j7rob"]
 size = Vector3(0.41915, 0.753631, 0.415374)
@@ -55,11 +45,8 @@ particles_anim_loop = false
 material = SubResource("StandardMaterial3D_god0t")
 size = Vector2(0.2, 0.2)
 
-[node name="Ammo_Pickup" type="MeshInstance3D"]
-mesh = SubResource("CylinderMesh_qb64k")
-surface_material_override/0 = SubResource("StandardMaterial3D_034tu")
-script = ExtResource("1_ip6u6")
-float_height = 0.4
+[node name="item_pickup_root" type="Node3D"]
+script = ExtResource("1_i4wt0")
 
 [node name="Pickup_Area" type="Area3D" parent="."]
 collision_layer = 8

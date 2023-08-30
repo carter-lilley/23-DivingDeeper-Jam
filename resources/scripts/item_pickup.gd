@@ -1,9 +1,12 @@
-extends MeshInstance3D
+extends item_class
 
 var sfx_pickup = preload("res://resources/audio/sfx/sfx_pickup.wav")
 
-@export var float_height: float = 2.0
-@export var float_speed: float = 1.0
+@export var float_height: float = 0.4
+@export var float_speed: float = 0.6
+
+var model_lib = preload("res://resources/models/model-lib.tscn")
+var model_lib_i
 
 var tween: Tween
 var tween_direction: int = 1  # 1 for up, -1 for down
@@ -13,6 +16,20 @@ func _process(delta):
 
 func _ready():
 	Globals.stween_to(self, "position", Vector3(0, float_height * tween_direction, 0),float_speed, flip_dir, Tween.TRANS_SINE, Tween.EASE_IN_OUT, true, false)
+	
+	model_lib_i = model_lib.instantiate()
+	var my_model
+	match my_type:
+		ITEM_TYPE.AMMO:
+			my_model = model_lib_i.get_node("Ammo-Pickup")
+		ITEM_TYPE.AMMO_PACK:
+			my_model = model_lib_i.get_node("Ammo-Pack-Pickup")
+		ITEM_TYPE.HEART:
+			my_model = model_lib_i.get_node("Heart-Pickup")
+	var lib_root = my_model.get_parent()
+	lib_root.remove_child(my_model)
+	my_model.visible = true
+	add_child(my_model)
 
 func flip_dir():
 	tween_direction *= -1
@@ -21,5 +38,11 @@ func flip_dir():
 func _on_pickup_area_body_entered(body):
 	Globals.oneshot_sound(sfx_pickup, self.position, -25.0,randf_range(0.5,2.0))
 	if body.is_in_group("Player"):
-		body.ammo += 1
 		queue_free()
+		match my_type:
+			ITEM_TYPE.AMMO:
+				body.ammo += 1
+			ITEM_TYPE.AMMO_PACK:
+				body.ammo += 10
+			ITEM_TYPE.HEART:
+				body.CURRENT_HEALTH += 1

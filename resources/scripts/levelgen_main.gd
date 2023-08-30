@@ -9,7 +9,7 @@ extends Node
 
 var half_size
 
-@export var ammo_num:int = 12
+@export var item_num:int = 12
 var enemy_num
 var light_num
 
@@ -79,7 +79,7 @@ func populate():
 		if gridmap.get_cell_item(cell_pos) == 0:
 			# The cell is empty, so spawn an enemy at this position
 			spawn_at_pos(lantern, cell_pos, Vector3(0,1,0), false)
-	for i in range(ammo_num):
+	for i in range(item_num):
 		# Generate random positions within the bounds
 		var random_x = randi_range(-half_size, half_size)
 		var random_z = randi_range(-half_size, half_size)
@@ -120,6 +120,8 @@ func spawn_at_pos(prefab : PackedScene, pos : Vector3, offset : Vector3, is_sibl
 	var instance = prefab.instantiate()
 	instance.global_transform.origin = gridmap.map_to_local(pos) + offset
 	if instance is enemy_class:
+		instance.my_type = randi_range(0,2)
+	if instance is item_class:
 		instance.my_type = randi_range(0,2)
 	if is_sibling:
 		add_sibling(instance)
