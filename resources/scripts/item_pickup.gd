@@ -1,6 +1,7 @@
 extends item_class
 
 var sfx_pickup = preload("res://resources/audio/sfx/sfx_pickup.wav")
+var sfx_heart_pickup = preload("res://resources/audio/sfx/sfx_heart_get.wav")
 
 @export var float_height: float = 0.4
 @export var float_speed: float = 0.6
@@ -36,13 +37,15 @@ func flip_dir():
 	Globals.stween_to(self, "position", Vector3(0, float_height * tween_direction, 0),float_speed, flip_dir, Tween.TRANS_SINE, Tween.EASE_IN_OUT, true, false)
 
 func _on_pickup_area_body_entered(body):
-	Globals.oneshot_sound(sfx_pickup, self.position, -25.0,randf_range(0.5,2.0))
 	if body.is_in_group("Player"):
 		queue_free()
 		match my_type:
 			ITEM_TYPE.AMMO:
+				Globals.oneshot_sound(sfx_pickup, self.position, -25.0,randf_range(0.5,2.0))
 				body.ammo += 1
 			ITEM_TYPE.AMMO_PACK:
+				Globals.oneshot_sound(sfx_pickup, self.position, -25.0,randf_range(0.5,2.0))
 				body.ammo += 10
 			ITEM_TYPE.HEART:
+				Globals.oneshot_sound(sfx_heart_pickup, self.position, -25.0,randf_range(0.5,2.0))
 				body.CURRENT_HEALTH += 1

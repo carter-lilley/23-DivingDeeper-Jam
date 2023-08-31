@@ -9,11 +9,6 @@ viewport_path = NodePath("3D-Label/SubViewport")
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_0s7n5")
-my_type = null
-speed = null
-accel = null
-alert_radius = null
-health = null
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_height_offset = 1.0

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bjqc2fwli5483"]
 
-[ext_resource type="QuadMesh" uid="uid://dcx503w7eg3al" path="res://resources/particles/blocky_part.tres" id="1_rmwd8"]
+[ext_resource type="QuadMesh" uid="uid://dv4ithan4hdec" path="res://resources/particles/blobky_part_emissive.tres" id="1_chf2n"]
 
 [sub_resource type="Gradient" id="Gradient_jjaau"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -28,8 +28,8 @@ amount = 6
 lifetime = 0.3
 one_shot = true
 speed_scale = 0.6
-explosiveness = 0.3
+explosiveness = 0.64
 randomness = 0.07
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_c73k7")
-draw_pass_1 = ExtResource("1_rmwd8")
+draw_pass_1 = ExtResource("1_chf2n")

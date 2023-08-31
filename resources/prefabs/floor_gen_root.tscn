@@ -15,7 +15,6 @@ size = Vector2(0, 0)
 
 [node name="Floor_Gen_Root" type="Node3D"]
 script = ExtResource("1_i7qes")
-ammo_num = null
 
 [node name="Ground-Zone" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_meoi8")

@@ -6,8 +6,6 @@ var curr_stage_height = 0.0
 var stage_offset = 15.0
 @onready var menu_rect = $"Control/UI-Menu-Rect"
 @onready var player = $Character
-@onready var floor_gen = preload("res://resources/prefabs/floor_gen_root.tscn")
-@onready var sfx_player_death = preload("res://resources/audio/sfx/PlayerDeath.wav")
 @onready var restart_btn = $"Control/UI-Menu-Rect/HBoxContainer/VBoxContainer/UI-Restart-Btn"
 
 @export var curr_floor_size: int = 12
@@ -46,7 +44,7 @@ func _process(_delta):
 				pass
 
 func start_floor(curr_time : float):
-	floor_instance = floor_gen.instantiate()
+	floor_instance = Preloads.pre_floor_gen.instantiate()
 	add_child(floor_instance)
 	
 	var cell_time = curr_time / 30
@@ -60,7 +58,7 @@ func change_current_floor(new_floor:Node3D):
 	current_floor = new_floor
 
 func game_over():
-	Globals.oneshot_sound(sfx_player_death, player.position, -12.0)
+	Globals.oneshot_sound(Preloads.sfx_player_death, player.position, -12.0)
 	game_state = gstates.GAME_OVER
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	menu_rect.visible = true

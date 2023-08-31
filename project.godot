@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Globals="*res://resources/scripts/global-autoload/globalutils.gd"
 DrawLine3d="*res://addons/DrawLine3D.gd"
+Preloads="*res://resources/scripts/global-autoload/preloads.gd"
 
 [input]
 

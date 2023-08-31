@@ -6,13 +6,6 @@ extends enemy_class
 @onready var debug_label = $"3D-Label/SubViewport/Label"
 @onready var game_handler = $".."
 
-var model_lib = preload("res://resources/models/model-lib.tscn")
-var sfx_death = preload("res://resources/audio/sfx/EnemyTakeDamage.wav")
-var sfx_dmg = preload("res://resources/audio/sfx/EnemyTakeDamage.wav")
-var sfx_shoot = preload("res://resources/audio/sfx/sfx_eye_shot.wav")
-
-var bullet_prefab = preload("res://resources/prefabs/enemy_bullet.tscn")
-
 var height_offset = 0.0
 var model_lib_i
 
@@ -27,7 +20,7 @@ var shoot_timer: Timer
 var max_path_dist
 
 func _ready():
-	model_lib_i = model_lib.instantiate()
+	model_lib_i = Preloads.lib_meshes.instantiate()
 	var new_col_shape = SphereShape3D.new()
 	var my_model
 	var my_col
@@ -129,6 +122,7 @@ func behavior_slime(delta):
 	velocity = velocity.lerp(dir * speed, accel * delta)
 	
 func behavior_bug(delta):
+#	Globals.oneshot_sound(sfx_bug_crawl, self.position, 1.0,randf_range(0.7,3.3))
 	var target_dir = (player.position - self.global_transform.origin).normalized()
 	look_at(self.global_transform.origin + -target_dir, Vector3(0, 1, 0))
 	self.rotation.x = 0.0
@@ -147,7 +141,7 @@ func behavior_eye(delta):
 	velocity = velocity.lerp(dir * speed, accel * delta)
 
 func shoot_timeout():
-	var bullet_instance = bullet_prefab.instantiate()
+	var bullet_instance = Preloads.pre_enemy_bullet.instantiate()
 	add_sibling(bullet_instance)
 	bullet_instance.global_transform.origin = self.global_transform.origin
 	var rayspeed = 6.5
@@ -155,15 +149,16 @@ func shoot_timeout():
 	var ray_goal = self.position + ray_dir
 	var ray_distance = ray_dir.length()
 	var ray_unit_dur = ray_distance / rayspeed
-	Globals.oneshot_sound(sfx_shoot, self.position, -25.0,randf_range(0.8,1.2))
+	Globals.oneshot_sound(Preloads.sfx_enemy_shoot, self.position, -25.0,randf_range(0.8,1.2))
 	Globals.stween_to(bullet_instance, "position", ray_goal, ray_unit_dur, Globals.null_call ,Tween.TRANS_LINEAR, Tween.EASE_IN, false, false)
 	shoot_timer = Globals.createTimer(randf_range(0.5,1.75), true, shoot_timeout, true)
 	
 func jump_timeout():
 	if is_on_floor():
 		var target_dir = (player.position - self.global_transform.origin).normalized()
-		var jump_strength = randf_range(12,24.0)
+		var jump_strength = randf_range(6,12.0)
 		velocity += Vector3(target_dir.x*jump_strength/4,jump_strength,target_dir.z*jump_strength/4)
+		Globals.oneshot_sound(Preloads.sfx_slime_jump, self.position, 0.5,randf_range(0.7,3.3))
 	jump_timer = Globals.createTimer(randf_range(0.5,1.75), true, jump_timeout, true)
 	
 func is_destination_reached():
@@ -174,11 +169,12 @@ func alert():
 
 ###function called from raycast collision
 func hit(hit_dir):
-	velocity += hit_dir * 8.0
+	behavior_state = w_states.ALERT
+	velocity += hit_dir * 11.0
 	health = health - 1.0
-	Globals.oneshot_sound(sfx_dmg, self.position, 1.0,randf_range(0.5,2.0))
+	Globals.oneshot_sound(Preloads.sfx_enemy_dmg, self.position, 25.0,1.0,.25)
 	if health == 0.0:
-		Globals.oneshot_sound(sfx_death, self.position, 0.0,1.0)
+		Globals.oneshot_sound(Preloads.sfx_enemy_death, self.position, 1.0,1.0,.15)
 		queue_free()
 
 #GODOT doc helper functions for disabling bitmasks

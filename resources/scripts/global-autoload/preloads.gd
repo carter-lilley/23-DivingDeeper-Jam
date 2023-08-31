@@ -1,0 +1,25 @@
+extends Node
+
+@onready var lib_meshes = preload("res://resources/models/model-lib.tscn")
+
+@onready var pre_floor_gen = preload("res://resources/prefabs/floor_gen_root.tscn")
+@onready var pre_burst_part = preload("res://resources/prefabs/burst_part.tscn")
+@onready var pre_blood_part = preload("res://resources/prefabs/blood_part.tscn")
+@onready var pre_player_bullet = preload("res://resources/prefabs/bullet.tscn")
+@onready var pre_enemy_bullet = preload("res://resources/prefabs/enemy_bullet.tscn")
+@onready var pre_enemy = preload("res://resources/prefabs/enemy.tscn")
+@onready var pre_lantern = preload("res://resources/prefabs/lantern.tscn")
+@onready var pre_goal = preload("res://resources/prefabs/goal.tscn")
+@onready var pre_item = preload("res://resources/prefabs/item_pickup.tscn")
+
+@onready var sfx_newfloor = preload("res://resources/audio/sfx/sfx_next_floor.wav")
+@onready var sfx_floorbreak = preload("res://resources/audio/sfx/sfx_floorbreak.wav")
+@onready var sfx_player_death = preload("res://resources/audio/sfx/sfx_player_death.wav")
+@onready var sfx_enemy_death = preload("res://resources/audio/sfx/sfx_enemy_death.wav")
+@onready var sfx_enemy_dmg = preload("res://resources/audio/sfx/sfx_enemy_hit.wav")
+@onready var sfx_enemy_shoot = preload("res://resources/audio/sfx/sfx_eye_shot.wav")
+@onready var sfx_slime_jump = preload("res://resources/audio/sfx/sfx_slime_jump.wav")
+@onready var sfx_bug_crawl = preload("res://resources/audio/sfx/sfx_slime_jump.wav")
+@onready var sfx_player_dmg = preload("res://resources/audio/sfx/sfx_player_dmg.wav")
+@onready var sfx_player_shoot = preload("res://resources/audio/sfx/sfx_player_shoot.wav")
+@onready var sfx_player_step = preload("res://resources/audio/sfx/sfx_player_step.wav")

@@ -16,7 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://pnolnikhrqa5" path="res://resources/models/textures/layer_icon.png" id="14_vg2ki"]
 
 [sub_resource type="Curve" id="Curve_wq0my"]
-_data = [Vector2(0, 0), 0.0, 0.141206, 0, 0, Vector2(0.76, 1), 2.08059, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.141206, 0, 0, Vector2(1, 1), 2.89474, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bapjq"]

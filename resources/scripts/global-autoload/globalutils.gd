@@ -42,7 +42,8 @@ func get_child_by_type(node: Node, type_name: String) -> Node:
 
 #ONE SHOTS-------------------------------------------------------
 
-func oneshot_sound(sfx: AudioStream, position: Vector3, volume: float = 1.0, pitch_scale: float = 1.0):
+func oneshot_sound(sfx: AudioStream, position: Vector3, volume: float = 1.0, pitch_scale: float = 1.0, delay : float =0.0):
+	await get_tree().create_timer(delay).timeout
 	var audioPlayer = AudioStreamPlayer3D.new()
 	audioPlayer.pitch_scale = pitch_scale 
 	audioPlayer.stream = sfx
@@ -122,17 +123,35 @@ func variant_diff(initial_value: Variant, target_value: Variant) -> float:
 		# Add more cases for other variant types as needed
 	return result
 
+# Function to select a random value from the weighted range
+func weightedValue(_range):
+	var totalWeight = 0
+
+	# Calculate the total weight of all items in the range
+	for item in _range:
+		totalWeight += item["weight"]
+
+	# Generate a random number within the total weight
+	var randomValue = randi() % totalWeight
+
+	# Iterate through the range to find the selected value
+	var cumulativeWeight = 0
+	for item in _range:
+		cumulativeWeight += item["weight"]
+		if randomValue < cumulativeWeight:
+			return item["value"]
+
+	# This should not happen, but if it does, return the last value as a fallback
+	return _range[-1]["value"]
 #TIMER UTILS-------------------------------------------------------
 func createTimer(wait_time: float, one_shot: bool, method: Callable, start: bool = false) -> Timer:
 	var timer = Timer.new()
 	timer.wait_time = wait_time
 	timer.one_shot = one_shot
 	timer.connect("timeout", method)
-	
+	add_child(timer)
 	if start:
-		add_child(timer)
 		timer.start()
-
 	return timer
 	
 func formatTime(seconds: float, includeMilliseconds: bool) -> String:
@@ -178,7 +197,7 @@ func response_curve(input: Vector2, curve: Curve) -> Vector2:
 	var dir = input.normalized()
 	var length = input.length()
 	var adjusted = curve.sample(length)
-	var value = dir * length
+	var value = dir * adjusted
 	return value
 
 func sqr2cirlce(input: Vector2) -> Vector2:
