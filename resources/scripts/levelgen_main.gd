@@ -79,7 +79,7 @@ func populate():
 
 func _on_goal_area_body_entered(body):
 	
-	Globals.oneshot_sound(Preloads.sfx_newfloor, body.position, 1.0,1.0)
+	Globals.oneshot_sound(Preloads.sfx_newfloor, body.position, 15.0,1.0)
 	
 	var group_nodes = get_tree().get_nodes_in_group("Enemy")
 	for node in group_nodes:

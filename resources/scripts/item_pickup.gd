@@ -41,11 +41,11 @@ func _on_pickup_area_body_entered(body):
 		queue_free()
 		match my_type:
 			ITEM_TYPE.AMMO:
-				Globals.oneshot_sound(sfx_pickup, self.position, -25.0,randf_range(0.5,2.0))
+				Globals.oneshot_sound(sfx_pickup, self.position, 1.0,randf_range(0.5,2.0))
 				body.ammo += 1
 			ITEM_TYPE.AMMO_PACK:
-				Globals.oneshot_sound(sfx_pickup, self.position, -25.0,randf_range(0.5,2.0))
+				Globals.oneshot_sound(sfx_pickup, self.position, 1.0,randf_range(0.5,2.0))
 				body.ammo += 10
 			ITEM_TYPE.HEART:
-				Globals.oneshot_sound(sfx_heart_pickup, self.position, -25.0,randf_range(0.5,2.0))
+				Globals.oneshot_sound(sfx_heart_pickup, self.position, 1.0,randf_range(0.5,2.0))
 				body.CURRENT_HEALTH += 1

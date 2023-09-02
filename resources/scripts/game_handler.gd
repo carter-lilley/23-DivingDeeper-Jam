@@ -58,7 +58,7 @@ func change_current_floor(new_floor:Node3D):
 	current_floor = new_floor
 
 func game_over():
-	Globals.oneshot_sound(Preloads.sfx_player_death, player.position, -12.0)
+	Globals.oneshot_sound(Preloads.sfx_player_death, player.position, 1.0)
 	game_state = gstates.GAME_OVER
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	menu_rect.visible = true

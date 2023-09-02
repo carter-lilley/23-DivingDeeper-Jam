@@ -48,7 +48,7 @@ func oneshot_sound(sfx: AudioStream, position: Vector3, volume: float = 1.0, pit
 	audioPlayer.pitch_scale = pitch_scale 
 	audioPlayer.stream = sfx
 	audioPlayer.transform.origin = position
-	audioPlayer.volume_db = volume # Convert volume to dB
+	audioPlayer.volume_db = 20 * log10(volume / 100.0) # Convert volume to dB
 	audioPlayer.finished.connect(free_node.bind(audioPlayer))
 	get_tree().get_root().add_child(audioPlayer)
 	audioPlayer.play()
@@ -123,6 +123,8 @@ func variant_diff(initial_value: Variant, target_value: Variant) -> float:
 		# Add more cases for other variant types as needed
 	return result
 
+func log10(x: float) -> float:
+	return log(x) / log(10)
 # Function to select a random value from the weighted range
 func weightedValue(_range):
 	var totalWeight = 0

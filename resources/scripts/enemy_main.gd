@@ -149,7 +149,7 @@ func shoot_timeout():
 	var ray_goal = self.position + ray_dir
 	var ray_distance = ray_dir.length()
 	var ray_unit_dur = ray_distance / rayspeed
-	Globals.oneshot_sound(Preloads.sfx_enemy_shoot, self.position, -25.0,randf_range(0.8,1.2))
+	Globals.oneshot_sound(Preloads.sfx_enemy_shoot, self.position, 15.0,randf_range(0.8,1.2))
 	Globals.stween_to(bullet_instance, "position", ray_goal, ray_unit_dur, Globals.null_call ,Tween.TRANS_LINEAR, Tween.EASE_IN, false, false)
 	shoot_timer = Globals.createTimer(randf_range(0.5,1.75), true, shoot_timeout, true)
 	
@@ -158,7 +158,7 @@ func jump_timeout():
 		var target_dir = (player.position - self.global_transform.origin).normalized()
 		var jump_strength = randf_range(6,12.0)
 		velocity += Vector3(target_dir.x*jump_strength/4,jump_strength,target_dir.z*jump_strength/4)
-		Globals.oneshot_sound(Preloads.sfx_slime_jump, self.position, 0.5,randf_range(0.7,3.3))
+		Globals.oneshot_sound(Preloads.sfx_slime_jump, self.position, 10.0,randf_range(0.7,3.3))
 	jump_timer = Globals.createTimer(randf_range(0.5,1.75), true, jump_timeout, true)
 	
 func is_destination_reached():
@@ -172,9 +172,9 @@ func hit(hit_dir):
 	behavior_state = w_states.ALERT
 	velocity += hit_dir * 11.0
 	health = health - 1.0
-	Globals.oneshot_sound(Preloads.sfx_enemy_dmg, self.position, 25.0,1.0,.25)
+	Globals.oneshot_sound(Preloads.sfx_enemy_dmg, self.position, 5.0,1.0,.25)
 	if health == 0.0:
-		Globals.oneshot_sound(Preloads.sfx_enemy_death, self.position, 1.0,1.0,.15)
+		Globals.oneshot_sound(Preloads.sfx_enemy_death, self.position, 5.0,1.0,.15)
 		queue_free()
 
 #GODOT doc helper functions for disabling bitmasks

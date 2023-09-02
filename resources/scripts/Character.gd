@@ -59,7 +59,7 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed("shoot_button") and ammo > 0.0:
 			ammo -= 1
 			shake(25,.5)
-			Globals.oneshot_sound(Preloads.sfx_player_shoot, self.position, -25.0,randf_range(0.5,2.0))
+			Globals.oneshot_sound(Preloads.sfx_player_shoot, self.position, 2.0,randf_range(0.5,2.0))
 			
 			var ray_dir: Vector3 = -camera.global_transform.basis.z
 			var shoot_ray_col: Dictionary = Globals.fire_ray(space_state, head.global_position, ray_dir, 100,0b00000000000000010101)
@@ -157,7 +157,7 @@ func shake(intensity: float, duration: float):
 func damage(dmg_dir : Vector3):
 #	shake(.05,.2)
 	velocity += dmg_dir * 8.0
-	Globals.oneshot_sound(Preloads.sfx_player_dmg, self.position, -25.0,randf_range(0.5,2.0))
+	Globals.oneshot_sound(Preloads.sfx_player_dmg, self.position, 5.0,randf_range(0.5,2.0))
 	CURRENT_HEALTH = CURRENT_HEALTH - 1.0
 
 func _on_hitbox_body_entered(body):
