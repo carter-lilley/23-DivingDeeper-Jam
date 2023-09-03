@@ -113,8 +113,7 @@ func _physics_process(delta):
 			velocity.x = lerp(velocity.x, direction.x * curr_speed, delta * 3.0)
 			velocity.z = lerp(velocity.z, direction.z * curr_speed, delta * 3.0)
 		
-		var cam_input = Globals.get_stick("cam_left", "cam_right", "cam_up", "cam_down")
-		cam_input = Globals.response_curve(cam_input,cam_stick_curve)
+		var cam_input = input_man.get_stick("cam_left", "cam_right", "cam_up", "cam_down", Vector2(0.92,.95),cam_stick_curve)
 		if cam_input:
 			var remap_vec : Vector2 = Vector2(cam_input.y,cam_input.x)
 			var cam_vec : Vector3 = Globals.vec3_vec2(remap_vec, 2, 0)

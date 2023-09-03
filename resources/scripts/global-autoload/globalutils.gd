@@ -187,35 +187,6 @@ func random_tint(_sprite: Sprite2D):
 	_sprite.modulate = Color(red, green, blue)
 	return
 
-#INPUT UTILS-------------------------------------------------------
-
-func get_stick(negative_x: StringName, positive_x: StringName, negative_y: StringName, positive_y: StringName, deadzone: float = -1.0) -> Vector2:
-	var _vec = Input.get_vector(negative_x, positive_x, negative_y, positive_y, deadzone)
-	var _vec_adj = sqr2cirlce(_vec)
-	return _vec_adj
-
-# Input related utilities
-func response_curve(input: Vector2, curve: Curve) -> Vector2:
-	var dir = input.normalized()
-	var length = input.length()
-	var adjusted = curve.sample(length)
-	var value = dir * adjusted
-	return value
-
-func sqr2cirlce(input: Vector2) -> Vector2:
-	if input.length() != 0:
-		var x = sign(input.x)
-		var y = sign(input.y)
-		var strength
-		input = Vector2(abs(input.x),abs(input.y))
-		if input.x > input.y:
-			strength = input.x
-		else:
-			strength = input.y
-		input += input.normalized() * (strength-input.length())
-		input *= Vector2(x,y)
-	return input
-
 #RANDOM-------------------------------------------------------
 func null_call():
 	return
