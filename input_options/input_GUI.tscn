@@ -1,10 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://df87omjrpcm5h"]
+[gd_scene load_steps=5 format=3 uid="uid://df87omjrpcm5h"]
 
 [ext_resource type="Script" path="res://input_options/input_GUI_controller.gd" id="1_7nb4h"]
 [ext_resource type="Script" path="res://input_options/player_options.gd" id="2_tqrvs"]
 
 [sub_resource type="Curve" id="Curve_78nb4"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 1.4, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 2.76608, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_ynr2q"]
+_data = [Vector2(0, 0), 0.0, 3.61842, 0, 0, Vector2(0.745454, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [node name="input_gui" type="Control"]
@@ -24,61 +28,83 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
 
-[node name="Left-Module" type="VBoxContainer" parent="CenterContainer/HBoxContainer"]
+[node name="Controller-Module" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="L-Trigger-Visualizer" type="Panel" parent="CenterContainer/HBoxContainer/Left-Module"]
+[node name="Left-Module" type="VBoxContainer" parent="CenterContainer/VBoxContainer/Controller-Module"]
+layout_mode = 2
+
+[node name="L-Trigger-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/Left-Module"]
 z_index = -1
-custom_minimum_size = Vector2(250, 90)
+custom_minimum_size = Vector2(250, 70)
 layout_mode = 2
 
-[node name="DPad-Visualizer" type="Panel" parent="CenterContainer/HBoxContainer/Left-Module"]
+[node name="L-Bumper-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/Left-Module"]
 z_index = -1
-custom_minimum_size = Vector2(250, 250)
+custom_minimum_size = Vector2(250, 45)
 layout_mode = 2
 
-[node name="L-Stick-Module" type="VBoxContainer" parent="CenterContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="L-Stick-Visualizer" type="Panel" parent="CenterContainer/HBoxContainer/L-Stick-Module"]
-z_index = -1
-custom_minimum_size = Vector2(250, 250)
-layout_mode = 2
-
-[node name="L-Stick-Response-Graph" type="Panel" parent="CenterContainer/HBoxContainer/L-Stick-Module"]
-z_index = -1
-custom_minimum_size = Vector2(250, 90)
-layout_mode = 2
-
-[node name="R-Stick-Module" type="VBoxContainer" parent="CenterContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="R-Stick-Visualizer" type="Panel" parent="CenterContainer/HBoxContainer/R-Stick-Module"]
+[node name="DPad-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/Left-Module"]
 z_index = -1
 custom_minimum_size = Vector2(250, 250)
 layout_mode = 2
 
-[node name="R-Stick-Response-Graph" type="Panel" parent="CenterContainer/HBoxContainer/R-Stick-Module"]
-z_index = -1
-custom_minimum_size = Vector2(250, 90)
+[node name="L-Stick-Module" type="VBoxContainer" parent="CenterContainer/VBoxContainer/Controller-Module"]
 layout_mode = 2
 
-[node name="Right-Module" type="VBoxContainer" parent="CenterContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="R-Trigger-Visualizer" type="Panel" parent="CenterContainer/HBoxContainer/Right-Module"]
-z_index = -1
-custom_minimum_size = Vector2(250, 90)
-layout_mode = 2
-
-[node name="Button-Visualizer" type="Panel" parent="CenterContainer/HBoxContainer/Right-Module"]
+[node name="L-Stick-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/L-Stick-Module"]
 z_index = -1
 custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+
+[node name="L-Stick-Response-Graph" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/L-Stick-Module"]
+z_index = -1
+custom_minimum_size = Vector2(250, 115)
+layout_mode = 2
+
+[node name="R-Stick-Module" type="VBoxContainer" parent="CenterContainer/VBoxContainer/Controller-Module"]
+layout_mode = 2
+
+[node name="R-Stick-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/R-Stick-Module"]
+z_index = -1
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+
+[node name="R-Stick-Response-Graph" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/R-Stick-Module"]
+z_index = -1
+custom_minimum_size = Vector2(250, 115)
+layout_mode = 2
+
+[node name="Right-Module" type="VBoxContainer" parent="CenterContainer/VBoxContainer/Controller-Module"]
+layout_mode = 2
+
+[node name="R-Trigger-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/Right-Module"]
+z_index = -1
+custom_minimum_size = Vector2(250, 70)
+layout_mode = 2
+
+[node name="R-Bumper-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/Right-Module"]
+z_index = -1
+custom_minimum_size = Vector2(250, 45)
+layout_mode = 2
+
+[node name="Button-Visualizer" type="Panel" parent="CenterContainer/VBoxContainer/Controller-Module/Right-Module"]
+z_index = -1
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+
+[node name="Keyboard-Module" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="CenterContainer/VBoxContainer/Keyboard-Module"]
+custom_minimum_size = Vector2(1010, 250)
 layout_mode = 2
 
 [node name="player_options" type="Node" parent="."]
 script = ExtResource("2_tqrvs")
 r_stick_response = SubResource("Curve_78nb4")
+r_trigger_response = SubResource("Curve_ynr2q")
+r_trigger_deadzone = Vector2(0.2, 0.6)

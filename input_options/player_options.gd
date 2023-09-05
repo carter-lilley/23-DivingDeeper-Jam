@@ -7,10 +7,11 @@ extends Node
 @export var r_trigger_response: Curve 
 @export var l_stick_deadzone: Vector2 = Vector2(0.4,0.95)
 @export var r_stick_deadzone: Vector2 = Vector2(0.4,0.95)
-@export var l_trigger_deadzone: Vector2 = Vector2(0.3,0.95)
-@export var r_trigger_deadzone: Vector2 = Vector2(0.3,0.95)
+@export var l_trigger_deadzone: Vector2 = Vector2(0.2,0.95)
+@export var r_trigger_deadzone: Vector2 = Vector2(0.2,0.95)
 
 func _ready():
+	#default curves
 	if l_stick_response == null:
 		l_stick_response = default_curve
 	if r_stick_response == null:
@@ -19,6 +20,3 @@ func _ready():
 		l_trigger_response = default_curve
 	if r_trigger_response == null:
 		r_trigger_response = default_curve
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

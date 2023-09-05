@@ -2,15 +2,15 @@ extends Node
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	key_gen_base_actions()
 	# Check if joypads are already connected at the beginning
 	check_connected_joypads()
 	# Connect the signal for joystick connection events
-#	button.button_down.connect(_on_button_down)
 	Input.connect("joy_connection_changed", _on_joy_connection_changed)
 
 func _on_joy_connection_changed(device_id, connected):
 	if connected:
-		generate_base_actions(device_id)
+		joy_gen_base_actions(device_id)
 		print("Joypad", device_id, "is connected.")
 		# Do something when a joypad is connected
 	else:
@@ -20,19 +20,34 @@ func _on_joy_connection_changed(device_id, connected):
 func check_connected_joypads():
 	var joypads = Input.get_connected_joypads()
 	for joy_id in joypads:
-		generate_base_actions(joy_id)
+		joy_gen_base_actions(joy_id)
 		print("Joypad", joy_id, "is already connected.")
 		# Do something when a joypad is already connected at the beginning
 
-func generate_base_actions(joy_id):
-	var btn_num = 25
+func key_gen_base_actions():
+	for keycode in range(32, 126):  # Iterate through keycodes for all standard letters (94)
+		var key_action_name = "key_" + str(keycode)  # Create a unique action name
+		InputMap.add_action(key_action_name, 0.0)  # Add the action
+		var event = InputEventKey.new()  # Create a key event
+		event.set_keycode(keycode)  # Set the keycode
+		InputMap.action_add_event(key_action_name, event)  # Add the event to the action
+	for keycode in range(4194305, 4194343):  # Iterate through keycodes for all standard mods (38)
+		var key_action_name = "key_" + str(keycode)  
+		InputMap.add_action(key_action_name, 0.0)  
+		var event = InputEventKey.new() 
+		event.set_keycode(keycode) 
+		InputMap.action_add_event(key_action_name, event)
+	#132 key inputs
+
+func joy_gen_base_actions(joy_id):
+	var btn_num = 16
 	for button_index in range(btn_num):
 		var btn_action_name = "joy" + str(joy_id) + "_btn" + str(button_index)
 		InputMap.add_action(btn_action_name,0.0)
 		var event = InputEventJoypadButton.new()
 		event.button_index = button_index
 		InputMap.action_add_event(btn_action_name, event)
-	var axis_num = 10
+	var axis_num = 6
 	for axis_index in range(axis_num):
 		var axis_action_name = "joy" + str(joy_id) + "_axis"
 		var axis_pos_action_name = axis_action_name + "+" + str(axis_index)
@@ -73,7 +88,7 @@ func prc_trigger(axis: StringName,deadzone_range:Vector2,response_curve: Curve) 
 	var raw_trigger = Input.get_action_strength(axis)
 	var dz_trigger = trigger_deadzone(raw_trigger,deadzone_range)
 	var response_trigger = float_response_curve(dz_trigger,response_curve)
-	return dz_trigger
+	return response_trigger
 	
 func stick_deadzone(_input:Vector2, dz_range:Vector2):
 	var input_mag = _input.length()
@@ -87,9 +102,10 @@ func stick_deadzone(_input:Vector2, dz_range:Vector2):
 func trigger_deadzone(_input: float, dz_range: Vector2):
 	var remapped_value
 	if _input >= dz_range.x:
-		remapped_value = remap(_input, dz_range.x, dz_range.y, 0.0, 1.0)
+		remapped_value = remap(_input, dz_range.x, dz_range.y, dz_range.x, 1.0)
 	else:
 		remapped_value = 0.0
+	remapped_value = clamp(remapped_value,0.0,1.0)
 	return remapped_value
 
 func response_curve(input: Vector2, curve: Curve) -> Vector2:
