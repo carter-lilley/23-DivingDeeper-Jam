@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://5bx28ey7jlr8"]
+[gd_scene load_steps=29 format=3 uid="uid://5bx28ey7jlr8"]
 
 [ext_resource type="Script" path="res://resources/scripts/game_handler.gd" id="1_8nix5"]
 [ext_resource type="Environment" uid="uid://cgrhk3h82eam2" path="res://debug_enviro-worldsettings.tres" id="1_34rio"]
@@ -14,6 +14,7 @@
 [ext_resource type="AudioStream" uid="uid://brwkr2u5yfhsq" path="res://resources/audio/music/Sketch1_08-25-23.mp3" id="12_fheo1"]
 [ext_resource type="Texture2D" uid="uid://l2v67w4i2d8x" path="res://resources/models/textures/bullet_icon.png" id="13_pxol8"]
 [ext_resource type="Texture2D" uid="uid://pnolnikhrqa5" path="res://resources/models/textures/layer_icon.png" id="14_vg2ki"]
+[ext_resource type="Script" path="res://input_options/player_options.gd" id="15_mvgpk"]
 
 [sub_resource type="Curve" id="Curve_wq0my"]
 _data = [Vector2(0, 0), 0.0, 0.141206, 0, 0, Vector2(1, 1), 2.89474, 0.0, 0, 0]
@@ -82,6 +83,14 @@ font_size = 32
 font_size = 48
 shadow_color = Color(0, 0, 0, 0.627451)
 shadow_offset = Vector2(5.87, 4.305)
+
+[sub_resource type="Curve" id="Curve_hjqj3"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 2.76608, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_ystqb"]
+_data = [Vector2(0, 0), 0.0, 3.61842, 0, 0, Vector2(0.745454, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [node name="World_Root" type="Node3D"]
 script = ExtResource("1_8nix5")
@@ -341,7 +350,11 @@ label_settings = SubResource("LabelSettings_r8dvs")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Player-Options" type="Node" parent="."]
+[node name="player_options" type="Node" parent="."]
+script = ExtResource("15_mvgpk")
+r_stick_response = SubResource("Curve_hjqj3")
+r_trigger_response = SubResource("Curve_ystqb")
+r_trigger_deadzone = Vector2(0.2, 0.6)
 
 [connection signal="body_entered" from="Character/Hitbox" to="Character" method="_on_hitbox_body_entered"]
 [connection signal="pressed" from="Control/UI-Menu-Rect/HBoxContainer/VBoxContainer/UI-Restart-Btn" to="." method="_on_ui_restart_btn_pressed"]

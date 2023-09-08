@@ -19,7 +19,7 @@ extends Control
 
 var btn_num = 16
 var btn_boolarr = []
-var master_key_arr = []
+var key_boolarr = []
 
 var r_stick_arr : PackedVector2Array = [Vector2(0, 0), Vector2(0, 0)]
 var r_trigger_arr : PackedFloat32Array = [0.0, 0.0]
@@ -37,6 +37,8 @@ var padding: float = 8.0
 func _ready():
 	btn_boolarr.resize(btn_num)
 	btn_boolarr.fill(false)
+	key_boolarr.resize(4194343)
+	key_boolarr.fill(false)
 
 func _draw():
 	r_stick_module()
@@ -79,7 +81,7 @@ func draw_keyboard(kb_panel : Panel, kb_pad:float, kb_width: float, kb_color: Co
 	
 	var kb_info = [
 		{"row": 1, "k_num": 13, "wideind": [] },  # Row 1
-		{"row": 2, "k_num": 15, "wideind": [15] },  # Row 2
+		{"row": 2, "k_num": 14, "wideind": [14] },  # Row 2
 		{"row": 3, "k_num": 14, "wideind": [1, 14] },  # Row 3
 		{"row": 4, "k_num": 13, "wideind": [1, 13] },  # Row 4
 		{"row": 5, "k_num": 13, "wideind": [1, 12] },  # Row 5
@@ -88,20 +90,17 @@ func draw_keyboard(kb_panel : Panel, kb_pad:float, kb_width: float, kb_color: Co
 	var num_rows = kb_info.size()
 	var key_height = panel_size.y / num_rows
 	var key_base_width = panel_size.x / 18
-	
+	var keyidx_tracker:float=0
 	for r in kb_info:
 		var num_keys_in_row = r["k_num"]
 		var row_leftover_px = panel_size.x - (key_base_width * num_keys_in_row)
-		var avgkeysize = panel_size.x / num_keys_in_row
-		
 		var offst_tracker:float=0
-		
 		for k in num_keys_in_row:
 			var internal_k =k+1 #iterate up one key so there is no "key zero"
 			var this_key_width = key_base_width
 			var curr_offset
 			if r["wideind"].size() == 0:
-				this_key_width = avgkeysize
+				this_key_width = panel_size.x / num_keys_in_row
 				curr_offset = 0.0
 			else:
 				if internal_k in r["wideind"]:
@@ -109,25 +108,39 @@ func draw_keyboard(kb_panel : Panel, kb_pad:float, kb_width: float, kb_color: Co
 					this_key_width += curr_offset
 				else:
 					curr_offset = 0.0
-#			print("Row: ",r["row"]," Key: ",internal_k," CurrOffset: ",curr_offset," TotalOffset: ",offst_tracker)
 			var key_rect = Rect2(
-				offst_tracker+ kb_pad / 2,#+ offst_tracker
+				offst_tracker+ kb_pad / 2,
 				(r["row"]-1) * key_height + kb_pad / 2,
 				this_key_width - kb_pad,
 				key_height - kb_pad
 			)
-			key_rect.position += panel_pos
+			key_rect.position += panel_pos #add the panel's position back in
 			
-			var key_dict = {
-				"rect" : key_rect,
-				"keycode" : 0,
-				"active" : false,
-				"glyph" : "O"
-			}
+			var my_keycode: int = 0
+			var my_glyph: String = "NULL"
+			if keyidx_tracker < 77:
+				my_keycode = keyData[keyidx_tracker]["keycode"]
+				my_glyph = keyData[keyidx_tracker]["glyph"]
+			#update the key id and row offset trackers for the next key
 			offst_tracker += this_key_width
-			master_key_arr.append(key_dict)
-			draw_rect(key_rect, kb_color, false, kb_width)  # You can adjust the line width as needed
-	
+			keyidx_tracker +=1
+			
+			#draw this key and its glpyh
+			draw_rect(key_rect, kb_color, false, kb_width)
+			
+			var actn_name:String = "key_" + str(my_keycode)
+			if Input.is_action_pressed(actn_name):
+				draw_rect(key_rect, Color.RED, true, kb_width)
+			else: draw_rect(key_rect, kb_color, false, kb_width)
+			
+			var fontsize = font.get_string_size(my_glyph).x/2
+			var fontascent = font.get_ascent()
+			var glyphpos = key_rect.position + Vector2(
+				(key_rect.size.x/2)-fontsize,
+				(key_rect.size.y/2)+fontascent/2
+			)
+			draw_string(font, glyphpos, my_glyph, HORIZONTAL_ALIGNMENT_CENTER)
+
 func draw_bumper(bmp_panel : Panel, bmp_pad:float, bmp_width: float, bmp_color: Color, btn_num:int):
 	bmp_pad*=2
 	var panel_size = bmp_panel.custom_minimum_size - Vector2(bmp_pad,bmp_pad)
@@ -252,10 +265,18 @@ func draw_stick(s_panel : Panel, s_pad : float, s_width: float, s_main_color: Co
 	else:
 		dz_lower_rad = remap(player_options.r_stick_deadzone.x,0.0,1.0,0.0,main_radius)
 		dz_upper_rad = remap(player_options.r_stick_deadzone.y,0.0,1.0,0.0,main_radius)
-		
+	
 	draw_arc(panel_pos, main_radius, 0, 360, 64, s_main_color, s_width)
-	draw_circle(panel_pos,dz_lower_rad,s_inner_color)
 	draw_arc(panel_pos, dz_upper_rad, 0, 360, 64, s_outer_color, s_width)
+	
+	var curr_joybtn
+	if left:
+		curr_joybtn = 7
+	else: curr_joybtn = 8
+		
+	if btn_boolarr[curr_joybtn]:
+		draw_circle(panel_pos,dz_lower_rad,Color.RED)
+	else: draw_circle(panel_pos,dz_lower_rad,s_inner_color)
 
 #primitives:
 func draw_hash(ln_pos: Vector2, ln_size: float, ln_width: float, ln_color: Color):
@@ -352,7 +373,8 @@ func _process(delta):
 	var r_raw_stick = Input.get_vector("joy0_axis-2", "joy0_axis+2", "joy0_axis-3", "joy0_axis+3")
 	var r_processed_stick = input_man.prc_stick("joy0_axis-2", "joy0_axis+2", "joy0_axis-3", "joy0_axis+3", player_options.r_stick_deadzone,player_options.r_stick_response)
 	
-	var l_raw_stick = Input.get_vector("joy0_axis-0", "joy0_axis+0", "joy0_axis-1", "joy0_axis+1")
+#	var l_raw_stick = Input.get_vector("joy0_axis-0", "joy0_axis+0", "joy0_axis-1", "joy0_axis+1")
+	var l_raw_stick = Input.get_vector("MOVE_LEFT", "MOVE_RIGHT", "MOVE_UP", "MOVE_DOWN")
 	var l_processed_stick = input_man.prc_stick("joy0_axis-0", "joy0_axis+0", "joy0_axis-1", "joy0_axis+1", player_options.l_stick_deadzone,player_options.l_stick_response)
 	
 	l_stick_arr = gui_monitor_stick(l_stick_panel,l_raw_stick,l_processed_stick)
@@ -390,6 +412,13 @@ func _process(delta):
 	else: btn_boolarr[6] = false
 	
 	#7&8 are stick clicks
+	if Input.is_action_pressed("joy0_btn7"):
+		btn_boolarr[7] = true
+	else: btn_boolarr[7] = false
+	
+	if Input.is_action_pressed("joy0_btn8"):
+		btn_boolarr[8] = true
+	else: btn_boolarr[8] = false
 	
 	# bumpers 
 	if Input.is_action_pressed("joy0_btn9"):
@@ -418,3 +447,84 @@ func _process(delta):
 	else: btn_boolarr[14] = false
 	
 	queue_redraw()
+
+#RAW DATA
+var keyData = [
+	{ "idx": 0, "keycode": 4194305, "glyph": "ESC" },
+	{ "idx": 1, "keycode": 4194332, "glyph": "F1" },
+	{ "idx": 2, "keycode": 4194333, "glyph": "F2" },
+	{ "idx": 3, "keycode": 4194334, "glyph": "F3" },
+	{ "idx": 4, "keycode": 4194335, "glyph": "F4" },
+	{ "idx": 5, "keycode": 4194336, "glyph": "F5" },
+	{ "idx": 6, "keycode": 4194337, "glyph": "F6" },
+	{ "idx": 7, "keycode": 4194338, "glyph": "F7" },
+	{ "idx": 8, "keycode": 4194339, "glyph": "F8" },
+	{ "idx": 9, "keycode": 4194340, "glyph": "F9" },
+	{ "idx": 10, "keycode": 4194341, "glyph": "F10" },
+	{ "idx": 11, "keycode": 4194342, "glyph": "F11" },
+	{ "idx": 12, "keycode": 4194343, "glyph": "F12" },
+	{ "idx": 13, "keycode": 96, "glyph": "`" },
+	{ "idx": 14, "keycode": 49, "glyph": "1" },
+	{ "idx": 15, "keycode": 50, "glyph": "2" },
+	{ "idx": 16, "keycode": 51, "glyph": "3" },
+	{ "idx": 17, "keycode": 52, "glyph": "4" },
+	{ "idx": 18, "keycode": 53, "glyph": "5" },
+	{ "idx": 19, "keycode": 54, "glyph": "6" },
+	{ "idx": 20, "keycode": 55, "glyph": "7" },
+	{ "idx": 21, "keycode": 56, "glyph": "8" },
+	{ "idx": 22, "keycode": 57, "glyph": "9" },
+	{ "idx": 23, "keycode": 48, "glyph": "0" },
+	{ "idx": 24, "keycode": 45, "glyph": "-" },
+	{ "idx": 25, "keycode": 61, "glyph": "=" },
+	{ "idx": 26, "keycode": 4194308, "glyph": "Backspace" },
+	{ "idx": 27, "keycode": 4194306, "glyph": "TAB" },
+	{ "idx": 28, "keycode": 81, "glyph": "Q" },
+	{ "idx": 29, "keycode": 87, "glyph": "W" },
+	{ "idx": 30, "keycode": 69, "glyph": "E" },
+	{ "idx": 31, "keycode": 82, "glyph": "R" },
+	{ "idx": 32, "keycode": 84, "glyph": "T" },
+	{ "idx": 33, "keycode": 89, "glyph": "Y" },
+	{ "idx": 34, "keycode": 85, "glyph": "U" },
+	{ "idx": 35, "keycode": 73, "glyph": "I" },
+	{ "idx": 36, "keycode": 79, "glyph": "O" },
+	{ "idx": 37, "keycode": 80, "glyph": "P" },
+	{ "idx": 38, "keycode": 91, "glyph": "[" },
+	{ "idx": 39, "keycode": 93, "glyph": "]" },
+	{ "idx": 40, "keycode": 92, "glyph": "\\" },
+	{ "idx": 41, "keycode": 4194329, "glyph": "CAPS" },
+	{ "idx": 42, "keycode": 65, "glyph": "A" },
+	{ "idx": 43, "keycode": 83, "glyph": "S" },
+	{ "idx": 44, "keycode": 68, "glyph": "D" },
+	{ "idx": 45, "keycode": 70, "glyph": "F" },
+	{ "idx": 46, "keycode": 71, "glyph": "G" },
+	{ "idx": 47, "keycode": 72, "glyph": "H" },
+	{ "idx": 48, "keycode": 74, "glyph": "J" },
+	{ "idx": 49, "keycode": 75, "glyph": "K" },
+	{ "idx": 50, "keycode": 76, "glyph": "L" },
+	{ "idx": 51, "keycode": 59, "glyph": ";" },
+	{ "idx": 52, "keycode": 39, "glyph": "'" },
+	{ "idx": 53, "keycode": 4194309, "glyph": "ENTER" },
+	{ "idx": 54, "keycode": 4194325, "glyph": "SHIFT" },
+	{ "idx": 55, "keycode": 90, "glyph": "Z" },
+	{ "idx": 56, "keycode": 88, "glyph": "X" },
+	{ "idx": 57, "keycode": 67, "glyph": "C" },
+	{ "idx": 58, "keycode": 86, "glyph": "V" },
+	{ "idx": 59, "keycode": 66, "glyph": "B" },
+	{ "idx": 60, "keycode": 78, "glyph": "N" },
+	{ "idx": 61, "keycode": 77, "glyph": "M" },
+	{ "idx": 62, "keycode": 44, "glyph": "," },
+	{ "idx": 63, "keycode": 46, "glyph": "." },
+	{ "idx": 64, "keycode": 47, "glyph": "/" },
+	{ "idx": 65, "keycode": 4194325, "glyph": "SHIFT" },
+	{ "idx": 66, "keycode": 4194320, "glyph": "UP" },
+	{ "idx": 67, "keycode": 4194326, "glyph": "CTRL" },
+	{ "idx": 68, "keycode": 4194327, "glyph": "WIN" },
+	{ "idx": 69, "keycode": 4194328, "glyph": "ALT" },
+	{ "idx": 70, "keycode": 32, "glyph": "SPACE" },
+	{ "idx": 71, "keycode": 4194328, "glyph": "ALT" },
+	{ "idx": 72, "keycode": 88, "glyph": "FN" },
+	{ "idx": 73, "keycode": 4194326, "glyph": "CTRL" },
+	{ "idx": 74, "keycode": 4194319, "glyph": "LEFT" },
+	{ "idx": 75, "keycode": 4194322, "glyph": "DOWN" },
+	{ "idx": 76, "keycode": 4194321, "glyph": "RIGHT" }
+]

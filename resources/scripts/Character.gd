@@ -11,6 +11,7 @@ var ammo: int = 50.0
 
 #Referencing variables for head/camera, node objects have to be saved in onready variables
 @onready var game_handler = $".."
+@onready var player_options = $"../player_options"
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 @onready var col: CollisionShape3D = $CollisionShape3D
@@ -48,15 +49,15 @@ func _process(delta):
 func _physics_process(delta):
 	if !is_on_floor():
 		velocity.y -= game_handler.gravity * delta
-		if Input.is_action_just_pressed("shoot_button") and ammo > 0.0:
-			var ray_dir: Vector3 = +camera.global_transform.basis.z
-			velocity += ray_dir*3.75
 
 	if game_handler.game_state == game_handler.gstates.PLAYING:
-		if Input.is_action_just_pressed("jump_button") and is_on_floor():
+		if Input.is_action_just_pressed("JUMP") and is_on_floor():
 			velocity.y = JUMP_VELOCITY
 		
-		if Input.is_action_just_pressed("shoot_button") and ammo > 0.0:
+		if Input.is_action_just_pressed("SHOOT") and ammo > 0.0:
+			if !is_on_floor():
+				var ray_dir: Vector3 = +camera.global_transform.basis.z
+				velocity += ray_dir*3.75
 			ammo -= 1
 			shake(25,.5)
 			Globals.oneshot_sound(Preloads.sfx_player_shoot, self.position, 2.0,randf_range(0.5,2.0))
@@ -85,7 +86,7 @@ func _physics_process(delta):
 				var ray_unit_dur = ray_distance / rayspeed
 				Globals.stween_to(bullet_instance, "position", ray_dir*ray_distance, ray_unit_dur,Globals.null_call,Tween.TRANS_QUINT, Tween.EASE_OUT, true, false)
 
-		if Input.is_action_pressed("crouch_button"):
+		if Input.is_action_pressed("CROUCH"):
 			curr_speed = CROUCH_SPEED
 			var new_head_height: Vector3 = Vector3(0,HEAD_HEIGHT/2,0)
 			head.position = head.position.lerp(new_head_height, delta * 5.0)
@@ -99,7 +100,7 @@ func _physics_process(delta):
 			else:
 				curr_speed = WALK_SPEED
 				
-		var input_dir = Input.get_vector("char_left", "char_right", "char_fwd", "char_back")
+		var input_dir = input_man.prc_stick("MOVE_LEFT", "MOVE_RIGHT", "MOVE_UP", "MOVE_DOWN", player_options.l_stick_deadzone, player_options.l_stick_response)
 		var direction = (head.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 		if is_on_floor():
 			#If the direction input is NOT zero, we multiply our x and z velocity (left right, forward back respectively) by the speed variable
@@ -113,12 +114,12 @@ func _physics_process(delta):
 			velocity.x = lerp(velocity.x, direction.x * curr_speed, delta * 3.0)
 			velocity.z = lerp(velocity.z, direction.z * curr_speed, delta * 3.0)
 		
-		var cam_input = input_man.get_stick("cam_left", "cam_right", "cam_up", "cam_down", Vector2(0.92,.95),cam_stick_curve)
-		if cam_input:
-			var remap_vec : Vector2 = Vector2(cam_input.y,cam_input.x)
-			var cam_vec : Vector3 = Globals.vec3_vec2(remap_vec, 2, 0)
-			tar_rot.y -= cam_vec.y*STICK_H_SENS*delta
-			tar_rot.x -= cam_vec.x*STICK_V_SENS*delta
+#		var cam_input = input_man.get_stick("cam_left", "cam_right", "cam_up", "cam_down", Vector2(0.92,.95),cam_stick_curve)
+#		if cam_input:
+#			var remap_vec : Vector2 = Vector2(cam_input.y,cam_input.x)
+#			var cam_vec : Vector3 = Globals.vec3_vec2(remap_vec, 2, 0)
+#			tar_rot.y -= cam_vec.y*STICK_H_SENS*delta
+#			tar_rot.x -= cam_vec.x*STICK_V_SENS*delta
 	else: velocity = velocity.lerp(Vector3(0,0,0),delta*12.0)
 	move_and_slide()
 
